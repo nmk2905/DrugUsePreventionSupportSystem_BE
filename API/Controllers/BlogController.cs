@@ -19,7 +19,7 @@ namespace API.Controllers
         }
 
         //Get all
-        [HttpGet]
+        [HttpGet("GetAll")]
         [EnableQuery]
         public async Task<IEnumerable<Blog>> Get()
         {
@@ -27,28 +27,28 @@ namespace API.Controllers
         }
 
         //Get by id
-        [HttpGet("{id}")]
+        [HttpGet("GetById/{id}")]
         public async Task<Blog> GetById(int id)
         {
             return await _blogService.GetById(id);
         }
 
         //create
-        [HttpPost]
+        [HttpPost("Create")]
         public async Task<int> Post(Blog blog)
         {
             return await _blogService.Create(blog);
         }
 
         //update
-        [HttpPut("{id}")]
+        [HttpPut("Update/{id}")]
         public async Task<int> Put(Blog blog)
         {
             return await _blogService.Update(blog);
         }
 
         //delete
-        [HttpDelete("{id}")]
+        [HttpDelete("Delete/{id}")]
         public async Task<bool> Delete(int id)
         {
             return await _blogService.Delete(id);
