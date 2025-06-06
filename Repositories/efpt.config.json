@@ -1,0 +1,133 @@
+﻿{
+   "CodeGenerationMode": 4,
+   "ContextClassName": "Drug_use_prevention_systemContext",
+   "ContextNamespace": null,
+   "FilterSchemas": false,
+   "IncludeConnectionString": true,
+   "ModelNamespace": null,
+   "OutputContextPath": null,
+   "OutputPath": "Models",
+   "PreserveCasingWithRegex": true,
+   "ProjectRootNamespace": "Repositories",
+   "Schemas": null,
+   "SelectedHandlebarsLanguage": 2,
+   "SelectedToBeGenerated": 0,
+   "T4TemplatePath": null,
+   "Tables": [
+      {
+         "Name": "[dbo].[Age_group]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Appointments]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Assessment_options]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Assessment_questions]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Assessment_Type]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Assessments]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Blog]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Certification]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Comment]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Consultants]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Consultants_availability]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Course]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Course_category]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Course_question]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Course_question_options]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Course_register]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Document]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Risk_level]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[User]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[User_Answer]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[User_assessments]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[User_Role]",
+         "ObjectType": 0
+      }
+   ],
+   "UiHint": null,
+   "UncountableWords": null,
+   "UseAsyncStoredProcedureCalls": true,
+   "UseBoolPropertiesWithoutDefaultSql": false,
+   "UseDatabaseNames": false,
+   "UseDatabaseNamesForRoutines": true,
+   "UseDateOnlyTimeOnly": true,
+   "UseDbContextSplitting": false,
+   "UseDecimalDataAnnotationForSprocResult": true,
+   "UseFluentApiOnly": true,
+   "UseHandleBars": false,
+   "UseHierarchyId": false,
+   "UseInflector": true,
+   "UseInternalAccessModifiersForSprocsAndFunctions": false,
+   "UseLegacyPluralizer": false,
+   "UseManyToManyEntity": false,
+   "UseNoDefaultConstructor": false,
+   "UseNoNavigations": false,
+   "UseNoObjectFilter": false,
+   "UseNodaTime": false,
+   "UseNullableReferences": false,
+   "UsePrefixNavigationNaming": false,
+   "UseSchemaFolders": false,
+   "UseSchemaNamespaces": false,
+   "UseSpatial": false,
+   "UseT4": false,
+   "UseT4Split": false
+}
