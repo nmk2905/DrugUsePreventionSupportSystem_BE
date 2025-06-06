@@ -1,6 +1,5 @@
 ﻿using Repositories;
 using Repositories.Models;
-using Services.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +8,15 @@ using System.Threading.Tasks;
 
 namespace Services
 {
+    public interface IUserService
+    {
+        Task<User> Authenticate(string email, string password);
+        Task<List<User>> GetAllUsersAsync();
+        Task<User> GetUserByEmail(string email);
+        Task<User> GetUserById(int id);
+        Task<bool> CheckEmailExist(string email);
+    }
+
     public class UserService : IUserService
     {
         private readonly UserRepository _repo;
