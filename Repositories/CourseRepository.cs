@@ -1,0 +1,77 @@
+﻿using Microsoft.EntityFrameworkCore;
+using Repositories.DBContext;
+using Repositories.Models;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Repositories
+{
+	public interface ICourseRepository
+	{
+		Task<List<Course>> GetAllAsync();
+		Task<Course?> CreateAsync(Course course);
+		Task<Course?> GetByIdAsync(int id);
+		Task<Course?> UpdateAsync(int id, Course course);
+		Task<Course?> DeleteAsync(int id);
+	}
+
+	public class CourseRepository : ICourseRepository
+	{
+		private readonly Drug_use_prevention_systemContext _context;
+		public CourseRepository(Drug_use_prevention_systemContext context)
+		{
+			_context = context;
+		}
+
+		public async Task<Course?> CreateAsync(Course course)
+		{
+			await _context.Courses.AddAsync(course);
+			await _context.SaveChangesAsync();
+			return course;
+		}
+
+		public async Task<Course?> DeleteAsync(int id)
+		{
+			var courseModel = await _context.Courses.FirstOrDefaultAsync(c => c.CourseId == id);
+
+			if (courseModel == null) 
+				return null;
+
+			_context.Courses.Remove(courseModel);
+			await _context.SaveChangesAsync();
+
+			return courseModel;
+		}
+
+		public async Task<List<Course>> GetAllAsync()
+		{
+			return await _context.Courses.ToListAsync();
+		}
+
+		public async Task<Course?> GetByIdAsync(int id)
+		{
+			return await _context.Courses.FirstOrDefaultAsync(i => i.CourseId == id);
+		}
+
+		public async Task<Course?> UpdateAsync(int id, Course course)
+		{
+			var courseModel = await _context.Courses.FirstOrDefaultAsync(c => c.CourseId == id);
+
+			if (courseModel == null)
+				return null;
+
+			courseModel.Title = course.Title;
+			courseModel.Description = course.Description;
+			courseModel.Duration = course.Duration;
+			courseModel.VideoUrl = course.VideoUrl;
+			courseModel.DocumentContent = course.DocumentContent;
+
+			await _context.SaveChangesAsync();
+
+			return courseModel;
+		}
+	}
+}
