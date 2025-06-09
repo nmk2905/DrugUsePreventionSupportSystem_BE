@@ -5,6 +5,9 @@ using Services;
 using System.Text.Json.Serialization;
 using System.Text;
 using Microsoft.OpenApi.Models;
+using Repositories;
+using Repositories.DBContext;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,8 +15,15 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IBlogService, BlogService>();
 builder.Services.AddScoped<ICommentService, CommentService>();
+builder.Services.AddScoped<ICourseRepository, CourseRepository>();
 
 builder.Services.AddControllers();
+
+builder.Services.AddDbContext<Drug_use_prevention_systemContext>(options =>
+{
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+});
+    
 
 //
 builder.Services.AddControllers().AddJsonOptions(options =>
