@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
-using Repositories.Models;
 using Services;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -10,8 +9,10 @@ using System.Text;
 
 namespace API.Controllers
 {
-    [Route("api/[controller]")]
+    using DTO.User;
+
     [ApiController]
+    [Route("api/[controller]")]
     public class UserController : Controller
     {
         private readonly IConfiguration _config;
@@ -23,43 +24,36 @@ namespace API.Controllers
             _userService = userService;
         }
 
-        //Login
         [HttpPost("Login")]
-        public IActionResult Login([FromBody] LoginRequest request)
+        public async Task<IActionResult> Login([FromBody] LoginUserDTO request)
         {
-            var user = _userService.Authenticate(request.Email, request.Password);
-
-            if (user == null || user.Result == null)
+            var user = await _userService.Authenticate(request.Email, request.Password);
+            if (user == null)
                 return Unauthorized();
 
-            var token = GenerateJSONWebToken(user.Result);
-
+            var token = GenerateJSONWebToken(user);
             return Ok(token);
         }
 
-        private string GenerateJSONWebToken(User userInfo)
+        private string GenerateJSONWebToken(UserDTO userInfo)
         {
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
 
-            var token = new JwtSecurityToken(_config["Jwt:Issuer"]
-                    , _config["Jwt:Audience"]
-                    , new Claim[]
-                    {
-                    new(ClaimTypes.Email, userInfo.Email),
-                    },
-                    expires: DateTime.Now.AddMinutes(120),
-                    signingCredentials: credentials
-                );
+            var token = new JwtSecurityToken(
+                _config["Jwt:Issuer"],
+                _config["Jwt:Audience"],
+                new Claim[] {
+                new(ClaimTypes.Email, userInfo.Email),
+                new(ClaimTypes.NameIdentifier, userInfo.UserId.ToString())
+                },
+                expires: DateTime.Now.AddMinutes(120),
+                signingCredentials: credentials
+            );
 
-            var tokenString = new JwtSecurityTokenHandler().WriteToken(token);
-
-            return tokenString;
+            return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
-        public sealed record LoginRequest(string Email, string Password);
-
-        //GetAllUser
         [HttpGet("GetAllUser")]
         public async Task<IActionResult> GetAllUsers()
         {
@@ -67,7 +61,6 @@ namespace API.Controllers
             return Ok(users);
         }
 
-        //GetUserByEmail
         [HttpGet("GetUserByEmail")]
         public async Task<IActionResult> GetByEmail([FromQuery] string email)
         {
@@ -75,24 +68,16 @@ namespace API.Controllers
                 return BadRequest("Email is required.");
 
             var user = await _userService.GetUserByEmail(email);
-            if (user == null)
-                return NotFound();
-
-            return Ok(user);
+            return user == null ? NotFound() : Ok(user);
         }
 
-        //GetUserById
         [HttpGet("GetById/{id}")]
         public async Task<IActionResult> GetById(int id)
         {
             var user = await _userService.GetUserById(id);
-            if (user == null)
-                return NotFound();
-
-            return Ok(user);
+            return user == null ? NotFound() : Ok(user);
         }
 
-        //CheckEmailExist
         [HttpGet("CheckEmailExist")]
         public async Task<IActionResult> CheckEmailExist([FromQuery] string email)
         {
@@ -103,5 +88,34 @@ namespace API.Controllers
             return Ok(new { exists });
         }
 
+        [HttpPost("Register")]
+        public async Task<IActionResult> Register([FromBody] RegisterUserDTO dto)
+        {
+            try
+            {
+                var user = await _userService.RegisterAsync(dto);
+                return Ok(user);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
+        [HttpPut("UpdateProfile")]
+        public async Task<IActionResult> UpdateProfile([FromBody] UpdateProfileDTO dto)
+        {
+            try
+            {
+                var user = await _userService.UpdateProfileAsync(dto);
+                return Ok(user);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
     }
+
 }

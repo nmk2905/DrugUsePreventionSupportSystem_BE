@@ -8,10 +8,14 @@ using Microsoft.OpenApi.Models;
 using Repositories;
 using Repositories.DBContext;
 using Microsoft.EntityFrameworkCore;
+using Services.Mappers;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+
+builder.Services.AddAutoMapper(typeof(MapperConfigurationsProfile));
+
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IBlogService, BlogService>();
 builder.Services.AddScoped<ICommentService, CommentService>();
