@@ -1,70 +1,72 @@
-﻿using DTO.Course;
-using Services.Mappers;
+﻿//using API.Dtos.Course;
+//using API.Mappers;
+using DTO.Course;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Identity.Client;
 using Repositories;
 using Repositories.DBContext;
 using Repositories.Models;
+using Services;
 
-//namespace API.Controllers
-//{
-//	[Route("api/[controller]")]
-//	[ApiController]
-//	public class CourseController : ControllerBase
-//	{
-//		private readonly ICourseRepository _repo;
-//		public CourseController(ICourseRepository repo)
-//		{
-//			_repo = repo;
-//		}
+namespace api.controllers
+{
+	[ApiController]
+	[Route("api/[controller]")]
+	public class CourseController : ControllerBase
+	{
+		private readonly ICourseService _service;
 
-//		[HttpGet]
-//		public async Task<IActionResult> GetAll()
-//		{
-//			var courseModel = await _repo.GetAllAsync();
-//			var courseDto = courseModel.Select(c => c.ToCourseDto());
-//			return Ok(courseDto);
-//		}
+		public CourseController(ICourseService service)
+		{
+			_service = service;
+		}
 
-//		[HttpGet("{id}")]
-//		public async Task<IActionResult> GetById([FromRoute] int id)
-//		{
-//			var course = await _repo.GetByIdAsync(id);
+		[HttpGet]
+		public async Task<IActionResult> GetAll()
+		{
+			var courseModel = await _service.GetAllCoursesAsync();
+			return Ok(courseModel);
+		}
 
-//			if (course == null) 
-//				return NotFound();
+		//		[HttpGet("{id}")]
+		//		public async Task<IActionResult> GetById([FromRoute] int id)
+		//		{
+		//			var course = await _service.GetCourseByIdAsync(id);
 
-//			return Ok(course);
-//		}
+		//			if (course == null)
+		//				return NotFound();
 
-//		[HttpPost]
-//		public async Task<IActionResult> CreateCourse([FromBody] CreateStockRequest courseRequest)
-//		{
-//			var courseDto = courseRequest.ToCourseFromCreateDto();
-//			await _repo.CreateAsync(courseDto);
-//			return CreatedAtAction(nameof(GetById), new {id = courseDto.CourseId}, courseDto.ToCourseDto());
-//		}
+		//			return Ok(course);
+		//		}
 
-//		[HttpPut("{id}")]
-//		public async Task<IActionResult> UpdateCourse([FromRoute] int id, [FromBody] UpdateCourseDto update)
-//		{
-//			var courseModel = await _repo.UpdateAsync(id, update.ToCourseFromUpdateDto());
+		[HttpPost]
+		public async Task<IActionResult> CreateCourse([FromBody] CreateCourseRequestDto courseRequest)
+		{
+			var courseModel = await _service.CreateCourseAsync(courseRequest);
+			return Ok(courseModel);
+		}
 
-//			if (courseModel == null)
-//				return NotFound();
+		[HttpPut("{id}")]
+		public async Task<IActionResult> UpdateCourse([FromRoute] int id, [FromBody] UpdateCourseRequestDto course)
+		{
+			var courseModel = await _service.UpdateCourseAsync(id, course);
 
-//			return Ok(courseModel);
-//		}
+			if (courseModel == null)
+				return NotFound();
 
-//		[HttpDelete("{id}")]
-//		public async Task<IActionResult> Delete([FromRoute] int id) 
-//		{
-//			var courseModel = await _repo.DeleteAsync(id);
-			
-//			if (courseModel == null)
-//				return NotFound();
+			return Ok(courseModel);
+		}
 
-//			return NoContent();
-//		}
-//	}
-//}
+		[HttpDelete("{id}")]
+		public async Task<IActionResult> Delete([FromRoute] int id)
+		{
+			var courseModel = await _service.DeleteCourseAsync(id);
+
+			if (courseModel == null)
+				return NotFound();
+
+			return NoContent();
+		}
+	}
+}
