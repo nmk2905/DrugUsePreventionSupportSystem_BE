@@ -19,7 +19,8 @@ builder.Services.AddAutoMapper(typeof(MapperConfigurationsProfile));
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IBlogService, BlogService>();
 builder.Services.AddScoped<ICommentService, CommentService>();
-builder.Services.AddScoped<ICourseRepository, CourseRepository>();
+builder.Services.AddScoped<ICourseService, CourseService>();
+builder.Services.AddScoped<CourseRepository>();
 
 builder.Services.AddControllers();
 
