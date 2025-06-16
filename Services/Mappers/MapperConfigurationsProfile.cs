@@ -9,10 +9,10 @@ namespace Services.Mappers
     {
         public MapperConfigurationsProfile()
         {
-            CreateMap<User, UserDTO>();
-            CreateMap<LoginUserDTO, User>();
-            CreateMap<RegisterUserDTO, User>();
-            CreateMap<UpdateProfileDTO, User>();
+            CreateMap<Course, CourseDto>();
+            CreateMap<CreateCourseRequestDto, Course>();
+            CreateMap<UpdateCourseRequestDto, Course>();
+
 
         }
 
