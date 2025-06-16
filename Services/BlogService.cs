@@ -10,11 +10,12 @@ namespace Services
 {
     public interface IBlogService
     {
-        Task<List<Blog>> GetAll();
+        Task<List<Blog>> GetAllApproved();
         Task<Blog> GetById(int id);
         Task<int> Create(Blog blog);
         Task<int> Update(Blog blog);
         Task<bool> Delete(int id);
+        Task<List<Blog>> GetAllForAdmin();
     }
     public class BlogService : IBlogService
     {
@@ -40,9 +41,10 @@ namespace Services
             return false;
         }
 
-        public async Task<List<Blog>> GetAll()
+        public async Task<List<Blog>> GetAllApproved()
         {
-            return await _repository.GetAllAsync();
+            var all = await _repository.GetAllAsync();
+            return all.Where(b => b.Status == "Approved").ToList();
         }
 
         public Task<Blog> GetById(int id)
@@ -53,6 +55,11 @@ namespace Services
         public Task<int> Update(Blog blog)
         {
             return _repository.UpdateAsync(blog);
+        }
+
+        public async Task<List<Blog>> GetAllForAdmin()
+        {
+            return await _repository.GetAllForAdmin();
         }
     }
 }
