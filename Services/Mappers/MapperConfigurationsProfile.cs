@@ -9,11 +9,6 @@ namespace Services.Mappers
     {
         public MapperConfigurationsProfile()
         {
-            //CreateMap<User, UserDTO>();
-            //CreateMap<LoginUserDTO, User>();
-            //CreateMap<RegisterUserDTO, User>();
-            //CreateMap<UpdateProfileDTO, User>();
-
             CreateMap<Course, CourseDto>().ForMember(dest => dest.CategoryId, opt => opt.MapFrom(src => src.Category)).ForMember(dest => dest.Category, opt => opt.MapFrom(src => src.CategoryNavigation));
             CreateMap<CreateCourseRequestDto, Course>();
             CreateMap<UpdateCourseRequestDto, Course>();
