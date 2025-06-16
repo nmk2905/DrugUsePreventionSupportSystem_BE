@@ -1,7 +1,8 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
+using Repositories.Models;
 using Services;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -9,8 +10,6 @@ using System.Text;
 
 namespace API.Controllers
 {
-    using DTO.User;
-
     [ApiController]
     [Route("api/[controller]")]
     public class UserController : Controller
@@ -25,17 +24,19 @@ namespace API.Controllers
         }
 
         [HttpPost("Login")]
-        public async Task<IActionResult> Login([FromBody] LoginUserDTO request)
+        public async Task<IActionResult> Login([FromBody] LoginRequest request)
         {
             var user = await _userService.Authenticate(request.Email, request.Password);
+
             if (user == null)
                 return Unauthorized();
 
             var token = GenerateJSONWebToken(user);
+
             return Ok(token);
         }
 
-        private string GenerateJSONWebToken(UserDTO userInfo)
+        private string GenerateJSONWebToken(User userInfo)
         {
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
@@ -43,9 +44,11 @@ namespace API.Controllers
             var token = new JwtSecurityToken(
                 _config["Jwt:Issuer"],
                 _config["Jwt:Audience"],
-                new Claim[] {
-                new(ClaimTypes.Email, userInfo.Email),
-                new(ClaimTypes.NameIdentifier, userInfo.UserId.ToString())
+                new Claim[]
+                {
+            new(ClaimTypes.NameIdentifier, userInfo.UserId.ToString()),
+            new(ClaimTypes.Email, userInfo.Email),
+            new(ClaimTypes.Role, userInfo.RoleId?.ToString() ?? "0")
                 },
                 expires: DateTime.Now.AddMinutes(120),
                 signingCredentials: credentials
@@ -54,7 +57,9 @@ namespace API.Controllers
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
+
         [HttpGet("GetAllUser")]
+        [Authorize(Roles = "1")]
         public async Task<IActionResult> GetAllUsers()
         {
             var users = await _userService.GetAllUsersAsync();
@@ -71,7 +76,7 @@ namespace API.Controllers
             return user == null ? NotFound() : Ok(user);
         }
 
-        [HttpGet("GetById/{id}")]
+        [HttpGet("GetUserById/{id}")]
         public async Task<IActionResult> GetById(int id)
         {
             var user = await _userService.GetUserById(id);
@@ -89,12 +94,12 @@ namespace API.Controllers
         }
 
         [HttpPost("Register")]
-        public async Task<IActionResult> Register([FromBody] RegisterUserDTO dto)
+        public async Task<IActionResult> Register([FromBody] User user)
         {
             try
             {
-                var user = await _userService.RegisterAsync(dto);
-                return Ok(user);
+                var result = await _userService.RegisterAsync(user);
+                return Ok(result);
             }
             catch (Exception ex)
             {
@@ -102,20 +107,37 @@ namespace API.Controllers
             }
         }
 
-        [HttpPut("UpdateProfile")]
-        public async Task<IActionResult> UpdateProfile([FromBody] UpdateProfileDTO dto)
+        [HttpPut("Update-Profile")]
+        [Authorize(Roles ="1,2,3,4")]
+        public async Task<IActionResult> UpdateProfile([FromBody] UpdateProfileRequest request)
         {
             try
             {
-                var user = await _userService.UpdateProfileAsync(dto);
-                return Ok(user);
+                // 1) Lấy UserId từ token
+                var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+
+                // 2) Lấy user hiện có từ DB
+                var user = await _userService.GetUserById(userId);
+                if (user == null) return NotFound();
+
+                // 3) Chỉ update các trường cho phép
+                user.FullName = request.FullName;
+                user.Email = request.Email;
+                user.Address = request.Address;
+                user.DateOfBirth = request.DateOfBirth;
+
+                // 4) Gọi Service update
+                var result = await _userService.UpdateProfileAsync(user);
+
+                return Ok(result);
             }
             catch (Exception ex)
             {
                 return BadRequest(new { message = ex.Message });
             }
         }
+        public sealed record LoginRequest(string Email, string Password);
 
+        public sealed record UpdateProfileRequest(string Email, string FullName, string Address, DateOnly DateOfBirth);
     }
-
 }

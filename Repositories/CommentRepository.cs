@@ -15,13 +15,13 @@ namespace Repositories
 
         public async Task<List<Comment>> GetAll()
         {
-            var Comments = await _context.Comments.Include(c => c.Blog).ToListAsync();
+            var Comments = await _context.Comments.ToListAsync();
             return Comments;
         }
 
         public async Task<Comment> GetByIdAsync(int id)
         {
-            var Comments = await _context.Comments.Include(c => c.Blog).FirstOrDefaultAsync(c => c.CommentId == id);
+            var Comments = await _context.Comments.FirstOrDefaultAsync(c => c.CommentId == id);
             return Comments;
         }
     }

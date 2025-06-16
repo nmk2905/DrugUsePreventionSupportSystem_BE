@@ -1,61 +1,46 @@
-﻿using AutoMapper;
-using DTO.User;
-using Repositories;
+﻿using Repositories;
 using Repositories.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Services
 {
     public interface IUserService
     {
-        Task<UserDTO> Authenticate(string email, string password);
-        Task<List<UserDTO>> GetAllUsersAsync();
-        Task<UserDTO> GetUserByEmail(string email);
-        Task<UserDTO> GetUserById(int id);
+        Task<User> Authenticate(string email, string password);
+        Task<List<User>> GetAllUsersAsync();
+        Task<User> GetUserByEmail(string email);
+        Task<User> GetUserById(int id);
         Task<bool> CheckEmailExist(string email);
-        Task<UserDTO> RegisterAsync(RegisterUserDTO dto);
-        Task<UserDTO> UpdateProfileAsync(UpdateProfileDTO dto);
-
-
+        Task<User> RegisterAsync(User user);
+        Task<User> UpdateProfileAsync(User user);
     }
 
     public class UserService : IUserService
     {
         private readonly UserRepository _repo;
-        private readonly IMapper _mapper;
 
-        public UserService(IMapper mapper)
+        public UserService()
         {
             _repo = new UserRepository();
-            _mapper = mapper;
         }
 
-        public async Task<UserDTO> Authenticate(string email, string password)
+        public async Task<User> Authenticate(string email, string password)
         {
-            var user = await _repo.GetUserAccount(email, password);
-            return user == null ? null : MapToDto(user);
+            return await _repo.GetUserAccount(email, password);
         }
 
-        public async Task<List<UserDTO>> GetAllUsersAsync()
+        public async Task<List<User>> GetAllUsersAsync()
         {
-            var users = await _repo.GetAllUsersAsync();
-            return users.Select(MapToDto).ToList();
+            return await _repo.GetAllUsersAsync();
         }
 
-        public async Task<UserDTO> GetUserByEmail(string email)
+        public async Task<User> GetUserByEmail(string email)
         {
-            var user = await _repo.GetUserByEmail(email);
-            return user == null ? null : MapToDto(user);
+            return await _repo.GetUserByEmail(email);
         }
 
-        public async Task<UserDTO> GetUserById(int id)
+        public async Task<User> GetUserById(int id)
         {
-            var user = await _repo.GetByIdAsync(id);
-            return user == null ? null : MapToDto(user);
+            return await _repo.GetByIdAsync(id);
         }
 
         public async Task<bool> CheckEmailExist(string email)
@@ -63,47 +48,31 @@ namespace Services
             return await _repo.CheckEmailExist(email);
         }
 
-        private UserDTO MapToDto(User user)
+        public async Task<User> RegisterAsync(User user)
         {
-            return new UserDTO
-            {
-                UserId = user.UserId,
-                Email = user.Email,
-                FullName = user.FullName,
-                Address = user.Address,
-                DateOfBirth = user.DateOfBirth
-            };
-        }
-
-        public async Task<UserDTO> RegisterAsync(RegisterUserDTO dto)
-        {
-            var exists = await _repo.CheckEmailExist(dto.Email);
+            var exists = await _repo.CheckEmailExist(user.Email);
             if (exists)
                 throw new Exception("Email already exists");
 
-            var user = _mapper.Map<User>(dto);
             user.CreatedDate = DateTime.UtcNow;
-
             await _repo.CreateAsync(user);
-            return _mapper.Map<UserDTO>(user);
+            return user;
         }
 
-        public async Task<UserDTO> UpdateProfileAsync(UpdateProfileDTO dto)
+        public async Task<User> UpdateProfileAsync(User input)
         {
-            var user = await _repo.GetByIdAsync(dto.UserId);
+            var user = await _repo.GetByIdAsync(input.UserId);
             if (user == null)
                 throw new Exception("User not found");
 
-            user.Email = dto.Email;
-            user.FullName = dto.FullName;
-            user.Address = dto.Address;
-            user.DateOfBirth = dto.DateOfBirth;
+            user.Email = input.Email;
+            user.FullName = input.FullName;
+            user.Address = input.Address;
+            user.Password = input.Password;
+            user.DateOfBirth = input.DateOfBirth;
 
             await _repo.UpdateAsync(user);
-
-            return _mapper.Map<UserDTO>(user);
+            return user;
         }
-
     }
-
 }

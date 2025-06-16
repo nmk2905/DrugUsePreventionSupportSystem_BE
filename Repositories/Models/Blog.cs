@@ -17,6 +17,8 @@ public partial class Blog
 
     public DateTime? PublishedDate { get; set; }
 
+    public string Status { get; set; }
+
     public virtual User Author { get; set; }
 
     public virtual ICollection<Comment> Comments { get; set; } = new List<Comment>();
