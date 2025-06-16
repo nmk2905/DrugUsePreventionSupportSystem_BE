@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using DTO.Course;
 using DTO.CourseCategory;
-using DTO.User;
 using Repositories.Models;
 
 namespace Services.Mappers
@@ -10,10 +9,10 @@ namespace Services.Mappers
     {
         public MapperConfigurationsProfile()
         {
-            CreateMap<User, UserDTO>();
-            CreateMap<LoginUserDTO, User>();
-            CreateMap<RegisterUserDTO, User>();
-            CreateMap<UpdateProfileDTO, User>();
+            //CreateMap<User, UserDTO>();
+            //CreateMap<LoginUserDTO, User>();
+            //CreateMap<RegisterUserDTO, User>();
+            //CreateMap<UpdateProfileDTO, User>();
 
             CreateMap<Course, CourseDto>().ForMember(dest => dest.CategoryId, opt => opt.MapFrom(src => src.Category)).ForMember(dest => dest.Category, opt => opt.MapFrom(src => src.CategoryNavigation));
             CreateMap<CreateCourseRequestDto, Course>();
