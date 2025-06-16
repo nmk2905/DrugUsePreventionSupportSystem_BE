@@ -13,6 +13,12 @@ namespace Repositories.Base
     {
         protected Drug_use_prevention_systemContext _context;
 
+        public async Task<bool> ExistsAsync<TKey>(TKey key)
+        {
+            var entity = await _context.Set<T>().FindAsync(key);
+            return entity != null;
+        }
+
         public GenericRepository()
         {
             _context ??= new Drug_use_prevention_systemContext();

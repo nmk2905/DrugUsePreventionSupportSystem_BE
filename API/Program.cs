@@ -20,7 +20,10 @@ builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IBlogService, BlogService>();
 builder.Services.AddScoped<ICommentService, CommentService>();
 builder.Services.AddScoped<ICourseService, CourseService>();
+builder.Services.AddScoped<ICourseCategory, CourseCategoryService>();
+
 builder.Services.AddScoped<CourseRepository>();
+builder.Services.AddScoped<CourseCategoryRepository>();
 
 builder.Services.AddControllers();
 

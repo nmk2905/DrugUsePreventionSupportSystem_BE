@@ -1,6 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Repositories.Base;
-using Repositories.DBContext;
 using Repositories.Models;
 
 namespace Repositories
@@ -14,7 +13,7 @@ namespace Repositories
 		{
 			await _context.Courses.AddAsync(course);
 			await _context.SaveChangesAsync();
-			return course;
+			return await _context.Courses.Include(c => c.CategoryNavigation).FirstOrDefaultAsync(c => c.CourseId == course.CourseId);
 		}
 
 		public async Task<Course?> DeleteAsync(int id)
@@ -32,17 +31,17 @@ namespace Repositories
 
 		public async Task<List<Course>> GetAllCourseAsync()
 		{
-			return await _context.Courses.ToListAsync();
+			return await _context.Courses.Include(c => c.CategoryNavigation).ToListAsync();
 		}
 
 		public async Task<Course?> GetByIdAsync(int id)
 		{
-			return await _context.Courses.FirstOrDefaultAsync(i => i.CourseId == id);
+			return await _context.Courses.Include(c => c.CategoryNavigation).FirstOrDefaultAsync(i => i.CourseId == id);
 		}
 
 		public async Task<Course?> UpdateAsync(int id, Course course)
 		{
-			var courseModel = await _context.Courses.FirstOrDefaultAsync(c => c.CourseId == id);
+			var courseModel = await _context.Courses.Include(c => c.CategoryNavigation).FirstOrDefaultAsync(c => c.CourseId == id);
 
 			if (courseModel == null)
 				return null;

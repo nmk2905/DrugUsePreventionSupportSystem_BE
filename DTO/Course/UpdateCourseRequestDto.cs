@@ -7,5 +7,6 @@
 		public int Duration { get; set; }
 		public string VideoUrl { get; set; } = string.Empty;
 		public string DocumentContent { get; set; } = string.Empty;
+		public int? CategoryId { get; set; }
 	}
 }
