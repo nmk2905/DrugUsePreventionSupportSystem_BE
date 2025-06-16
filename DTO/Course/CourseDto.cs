@@ -1,4 +1,7 @@
-﻿namespace DTO.Course
+﻿using DTO.CourseCategory;
+using System.Text.Json.Serialization;
+
+namespace DTO.Course
 {
 	public class CourseDto
 	{
@@ -15,5 +18,8 @@
 		public string VideoUrl { get; set; } = string.Empty;
 
 		public string DocumentContent { get; set; } = string.Empty;
+		[JsonIgnore]
+		public int? CategoryId { get; set; }
+		public CourseCategoryDto Category { get; set; }
 	}
 }
