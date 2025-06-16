@@ -7,6 +7,14 @@ namespace Services.Mappers
 {
     public class MapperConfigurationsProfile : Profile
     {
+        public MapperConfigurationsProfile()
+        {
+            CreateMap<User, UserDTO>();
+            CreateMap<LoginUserDTO, User>();
+            CreateMap<RegisterUserDTO, User>();
+            CreateMap<UpdateProfileDTO, User>();
+
+        }
 
 
         //public static CourseDto ToCourseDto(this Course courseModel)

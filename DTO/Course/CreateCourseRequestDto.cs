@@ -1,6 +1,6 @@
 ﻿namespace DTO.Course
 {
-	public class CreateStockRequest
+	public class CreateCourseRequestDto
 	{
 		public string Title { get; set; } = string.Empty;
 		public string Description { get; set; } = string.Empty;

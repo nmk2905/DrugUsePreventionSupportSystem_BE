@@ -1,30 +1,14 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Repositories.Base;
 using Repositories.DBContext;
 using Repositories.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Repositories
 {
-	public interface ICourseRepository
-	{
-		Task<List<Course>> GetAllAsync();
-		Task<Course?> CreateAsync(Course course);
-		Task<Course?> GetByIdAsync(int id);
-		Task<Course?> UpdateAsync(int id, Course course);
-		Task<Course?> DeleteAsync(int id);
-	}
 
-	public class CourseRepository : ICourseRepository
+	public class CourseRepository : GenericRepository<Course>
 	{
-		private readonly Drug_use_prevention_systemContext _context;
-		public CourseRepository(Drug_use_prevention_systemContext context)
-		{
-			_context = context;
-		}
+		public CourseRepository() { }
 
 		public async Task<Course?> CreateAsync(Course course)
 		{
@@ -37,7 +21,7 @@ namespace Repositories
 		{
 			var courseModel = await _context.Courses.FirstOrDefaultAsync(c => c.CourseId == id);
 
-			if (courseModel == null) 
+			if (courseModel == null)
 				return null;
 
 			_context.Courses.Remove(courseModel);
@@ -46,7 +30,7 @@ namespace Repositories
 			return courseModel;
 		}
 
-		public async Task<List<Course>> GetAllAsync()
+		public async Task<List<Course>> GetAllCourseAsync()
 		{
 			return await _context.Courses.ToListAsync();
 		}
