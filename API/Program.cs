@@ -23,6 +23,7 @@ builder.Services.AddScoped<ICommentService, CommentService>();
 builder.Services.AddScoped<ICourseService, CourseService>();
 builder.Services.AddScoped<ICourseCategory, CourseCategoryService>();
 builder.Services.AddScoped<IAvailabilityService, AvailabilityService>();
+builder.Services.AddScoped<IConsultantService, ConsultantService>();
 
 
 builder.Services.AddScoped<CourseRepository>();
