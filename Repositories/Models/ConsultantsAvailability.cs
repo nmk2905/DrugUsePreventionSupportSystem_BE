@@ -11,11 +11,15 @@ public partial class ConsultantsAvailability
 
     public int? ConsultantId { get; set; }
 
-    public string DayOfWeek { get; set; }
+    public DateOnly? SpecificDate { get; set; }
 
-    public DateOnly StartDate { get; set; }
+    public TimeOnly? StartTime { get; set; }
 
-    public DateOnly? EndDate { get; set; }
+    public TimeOnly? EndTime { get; set; }
+
+    public bool IsAvailable { get; set; }
+
+    public virtual ICollection<Appointment> Appointments { get; set; } = new List<Appointment>();
 
     public virtual Consultant Consultant { get; set; }
 }

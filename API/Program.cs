@@ -9,6 +9,7 @@ using Repositories;
 using Repositories.DBContext;
 using Microsoft.EntityFrameworkCore;
 using Services.Mappers;
+using API.Helpers;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,6 +22,8 @@ builder.Services.AddScoped<IBlogService, BlogService>();
 builder.Services.AddScoped<ICommentService, CommentService>();
 builder.Services.AddScoped<ICourseService, CourseService>();
 builder.Services.AddScoped<ICourseCategory, CourseCategoryService>();
+builder.Services.AddScoped<IAvailabilityService, AvailabilityService>();
+
 
 builder.Services.AddScoped<CourseRepository>();
 builder.Services.AddScoped<CourseCategoryRepository>();
@@ -36,6 +39,10 @@ builder.Services.AddDbContext<Drug_use_prevention_systemContext>(options =>
 //
 builder.Services.AddControllers().AddJsonOptions(options =>
 {
+    //
+    options.JsonSerializerOptions.Converters.Add(new DateOnlyJsonConverter());
+    options.JsonSerializerOptions.Converters.Add(new TimeOnlyJsonConverter());
+
     options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
     options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.Never;
 });

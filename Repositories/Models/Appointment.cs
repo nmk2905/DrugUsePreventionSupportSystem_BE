@@ -13,12 +13,6 @@ public partial class Appointment
 
     public int? ConsultantId { get; set; }
 
-    public DateTime AppointmentDate { get; set; }
-
-    public DateTime StartDate { get; set; }
-
-    public DateTime EndDate { get; set; }
-
     public DateTime CreatedDate { get; set; }
 
     public string MeetingLink { get; set; }
@@ -26,6 +20,10 @@ public partial class Appointment
     public int? Material { get; set; }
 
     public string Status { get; set; }
+
+    public int? AvailabilityId { get; set; }
+
+    public virtual ConsultantsAvailability Availability { get; set; }
 
     public virtual Consultant Consultant { get; set; }
 

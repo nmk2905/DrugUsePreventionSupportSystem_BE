@@ -63,10 +63,6 @@ public partial class Drug_use_prevention_systemContext : DbContext
 
     public virtual DbSet<UserRole> UserRoles { get; set; }
 
-    //    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-    //#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
-    //        => optionsBuilder.UseSqlServer("Data Source=DESKTOP-5BPEDK6;Initial Catalog=Drug_use_prevention_system;Integrated Security=True");
-
     public static string GetConnectionString(string connectionStringName)
     {
         var config = new ConfigurationBuilder()
@@ -100,27 +96,23 @@ public partial class Drug_use_prevention_systemContext : DbContext
             entity.HasKey(e => e.AppointmentId).HasName("PK__Appointm__FD01B5035B322564");
 
             entity.Property(e => e.AppointmentId).HasColumnName("Appointment_ID");
-            entity.Property(e => e.AppointmentDate)
-                .HasColumnType("datetime")
-                .HasColumnName("Appointment_date");
+            entity.Property(e => e.AvailabilityId).HasColumnName("Availability_ID");
             entity.Property(e => e.ConsultantId).HasColumnName("Consultant_ID");
             entity.Property(e => e.CreatedDate)
                 .HasColumnType("datetime")
                 .HasColumnName("Created_date");
-            entity.Property(e => e.EndDate)
-                .HasColumnType("datetime")
-                .HasColumnName("End_date");
             entity.Property(e => e.MeetingLink)
                 .IsRequired()
                 .HasMaxLength(200)
                 .HasColumnName("Meeting_link");
-            entity.Property(e => e.StartDate)
-                .HasColumnType("datetime")
-                .HasColumnName("Start_date");
             entity.Property(e => e.Status)
                 .IsRequired()
                 .HasMaxLength(50);
             entity.Property(e => e.UserId).HasColumnName("User_ID");
+
+            entity.HasOne(d => d.Availability).WithMany(p => p.Appointments)
+                .HasForeignKey(d => d.AvailabilityId)
+                .HasConstraintName("FK_Appointment_ConsultantsAvailability");
 
             entity.HasOne(d => d.Consultant).WithMany(p => p.Appointments)
                 .HasForeignKey(d => d.ConsultantId)
@@ -223,6 +215,9 @@ public partial class Drug_use_prevention_systemContext : DbContext
                 .HasDefaultValueSql("(getdate())")
                 .HasColumnType("datetime")
                 .HasColumnName("Published_date");
+            entity.Property(e => e.Status)
+                .HasMaxLength(50)
+                .HasDefaultValue("Pending");
             entity.Property(e => e.Title).HasMaxLength(200);
 
             entity.HasOne(d => d.Author).WithMany(p => p.Blogs)
@@ -312,12 +307,7 @@ public partial class Drug_use_prevention_systemContext : DbContext
 
             entity.Property(e => e.AvailabilityId).HasColumnName("Availability_ID");
             entity.Property(e => e.ConsultantId).HasColumnName("Consultant_ID");
-            entity.Property(e => e.DayOfWeek)
-                .IsRequired()
-                .HasMaxLength(20)
-                .HasColumnName("Day_of_week");
-            entity.Property(e => e.EndDate).HasColumnName("End_date");
-            entity.Property(e => e.StartDate).HasColumnName("Start_date");
+            entity.Property(e => e.IsAvailable).HasDefaultValue(true);
 
             entity.HasOne(d => d.Consultant).WithMany(p => p.ConsultantsAvailabilities)
                 .HasForeignKey(d => d.ConsultantId)
