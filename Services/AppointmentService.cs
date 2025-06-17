@@ -38,14 +38,21 @@ namespace Services
                 CreatedDate = DateTime.UtcNow,
                 Status = AppointmentStatus.Pending
             };
-
-            await _appointmentRepo.CreateAsync(appointment);
+            try
+            {
+                await _appointmentRepo.CreateAsync(appointment);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Lỗi khi tạo appointment: " + ex.InnerException?.Message ?? ex.Message);
+            }
 
             slot.IsAvailable = false;
             await _availabilityRepo.UpdateAsync(slot);
 
             return appointment;
         }
+
 
         public async Task<List<Appointment>> GetAppointmentsByUserIdAsync(int userId)
         {

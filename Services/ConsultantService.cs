@@ -13,6 +13,9 @@ namespace Services
         Task<List<Consultant>> GetAllConsultant();
         Task<Consultant> GetConsultantById(int id);
         Task<Consultant> UpdateProfileAsync(Consultant consultant);
+        Task<List<Consultant>> GetActiveConsultantsAsync();
+
+
     }
     public class ConsultantService : IConsultantService
     {
@@ -45,5 +48,15 @@ namespace Services
             await _repository.UpdateAsync(cons);
             return cons;
         }
+
+        public async Task<List<Consultant>> GetActiveConsultantsAsync()
+        {
+            var all = await _repository.GetAllAsync();
+            return all
+                .Where(c => c.IsActive == true)
+                .ToList();
+        }
+
+
     }
 }

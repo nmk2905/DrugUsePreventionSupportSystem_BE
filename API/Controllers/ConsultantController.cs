@@ -52,7 +52,26 @@ namespace API.Controllers
             var updated = await _consultantService.UpdateProfileAsync(current);
             return Ok(updated);
         }
+
+        [HttpGet("Available")]
+        [Authorize(Roles = "3")] // Customer gọi lấy các active cons
+        public async Task<IActionResult> GetAvailableConsultants()
+        {
+            var consultants = await _consultantService.GetActiveConsultantsAsync();
+
+            var result = consultants.Select(c => new ConsultantPreview
+            {
+                ConsultantId = c.ConsultantId,
+                FullName = c.ConsultantNavigation?.FullName,
+                Specification = c.Specification,
+                ExperienceYears = c.ExperienceYears
+            });
+
+            return Ok(result);
+        }
     }
+
+
 
     public class UpdateConsultantRequest
     {
@@ -60,5 +79,14 @@ namespace API.Controllers
         public string Qualifications { get; set; }
         public int ExperienceYears { get; set; }
     }
+
+    public class ConsultantPreview
+    {
+        public int ConsultantId { get; set; }
+        public string FullName { get; set; }
+        public string Specification { get; set; }
+        public int ExperienceYears { get; set; }
+    }
+
 
 }
