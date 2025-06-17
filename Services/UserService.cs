@@ -12,6 +12,8 @@ namespace Services
         Task<bool> CheckEmailExist(string email);
         Task<User> RegisterAsync(User user);
         Task<User> UpdateProfileAsync(User user);
+        Task<bool> ResetPasswordAsync(string email, string newPassword);
+
     }
 
     public class UserService : IUserService
@@ -74,5 +76,16 @@ namespace Services
             await _repo.UpdateAsync(user);
             return user;
         }
+
+        public async Task<bool> ResetPasswordAsync(string email, string newPassword)
+        {
+            var user = await _repo.GetUserByEmail(email);
+            if (user == null) return false;
+
+            user.Password = newPassword; 
+            await _repo.UpdateAsync(user);
+            return true;
+        }
+
     }
 }

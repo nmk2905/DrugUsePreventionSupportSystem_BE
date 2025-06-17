@@ -94,11 +94,22 @@ namespace API.Controllers
         }
 
         [HttpPost("Register")]
-        public async Task<IActionResult> Register([FromBody] User user)
+        public async Task<IActionResult> Register([FromBody] RegisterRequest request)
         {
             try
             {
-                var result = await _userService.RegisterAsync(user);
+                var newUser = new User
+                {
+                    FullName = request.FullName,
+                    Address = request.Address,
+                    Email = request.Email,
+                    DateOfBirth = request.DateOfBirth,
+                    Password = request.Password,
+                    RoleId = 3, //customer
+                    CreatedDate = DateTime.UtcNow
+                };
+
+                var result = await _userService.RegisterAsync(newUser);
                 return Ok(result);
             }
             catch (Exception ex)
@@ -106,6 +117,7 @@ namespace API.Controllers
                 return BadRequest(new { message = ex.Message });
             }
         }
+
 
         [HttpPut("Update-Profile")]
         [Authorize(Roles ="1,2,3,4")]
@@ -136,8 +148,38 @@ namespace API.Controllers
                 return BadRequest(new { message = ex.Message });
             }
         }
+
+
+        [HttpPost("Forgot-Password")]
+        [Authorize(Roles = "1,2,3,4")]
+        public async Task<IActionResult> ForgotPassword([FromBody] ForgotPasswordRequest request)
+        {
+            if (string.IsNullOrWhiteSpace(request.Email) || string.IsNullOrWhiteSpace(request.NewPassword))
+                return BadRequest("Email and new password are required.");
+
+            var success = await _userService.ResetPasswordAsync(request.Email, request.NewPassword);
+            if (!success)
+                return NotFound("User with provided email does not exist.");
+
+            return Ok(new { message = "Password has been reset successfully." });
+        }
+
+
         public sealed record LoginRequest(string Email, string Password);
 
         public sealed record UpdateProfileRequest(string Email, string FullName, string Address, DateOnly DateOfBirth);
+
+        public sealed record ForgotPasswordRequest(string Email, string NewPassword);
+
+        public sealed record RegisterRequest(
+    string FullName,
+    string Address,
+    string Email,
+    DateOnly DateOfBirth,
+    string Password
+);
+
+
     }
+
 }
