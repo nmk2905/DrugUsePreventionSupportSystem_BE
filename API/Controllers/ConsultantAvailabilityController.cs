@@ -18,17 +18,22 @@ namespace API.Controllers
             _availabilityService = availabilityService;
         }
 
+
         [HttpGet("GetAvailableSlots")]
-        [Authorize(Roles = "2")]
-        public async Task<IActionResult> GetAvailableSlots([FromQuery] DateOnly from, [FromQuery] DateOnly to)
+        [Authorize(Roles = "2")] //cons
+        public async Task<IActionResult> GetAvailableSlots([FromQuery] string from, [FromQuery] string to)
         {
+            var fromDate = DateOnly.Parse(from);
+            var toDate = DateOnly.Parse(to);
+
             var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
-            var slots = await _availabilityService.GetAvailableSlots(userId, from, to);
+            var slots = await _availabilityService.GetAvailableSlots(userId, fromDate, toDate);
             return Ok(slots);
         }
 
+
         [HttpPost("CreateSlot")]
-        [Authorize(Roles = "2")]
+        [Authorize(Roles = "2")] //cons
         public async Task<IActionResult> CreateSlot([FromBody] CreateSlotRequest request)
         {
             var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
