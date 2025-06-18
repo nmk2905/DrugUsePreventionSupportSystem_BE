@@ -44,7 +44,7 @@ namespace Services
 
         public async Task<List<Comment>> GetAll()
         {
-            return await _repository.GetAllAsync();
+            return await _repository.GetAll();
         }
 
         public Task<Comment> GetById(int id)

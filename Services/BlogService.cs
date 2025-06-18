@@ -43,8 +43,7 @@ namespace Services
 
         public async Task<List<Blog>> GetAllApproved()
         {
-            var all = await _repository.GetAllAsync();
-            return all.Where(b => b.Status == "Approved").ToList();
+            return await _repository.GetAllApproved();
         }
 
         public Task<Blog> GetById(int id)

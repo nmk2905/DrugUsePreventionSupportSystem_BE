@@ -51,11 +51,12 @@ namespace Services
 
         public async Task<List<Consultant>> GetActiveConsultantsAsync()
         {
-            var all = await _repository.GetAllAsync();
+            var all = await _repository.GetAllConsultant();
             return all
-                .Where(c => c.IsActive == true)
+                .Where(c => c.IsActive)
                 .ToList();
         }
+
 
 
     }

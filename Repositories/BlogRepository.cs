@@ -15,18 +15,23 @@ namespace Repositories
 
         public async Task<List<Blog>> GetAllForAdmin()
         {
-            return await _context.Blogs.ToListAsync();
+            return await _context.Blogs.Include(b => b.Author).ToListAsync();
         }
         public async Task<List<Blog>> GetAllApproved()
         {
-            var Blogs = await _context.Blogs.ToListAsync();  
-            return Blogs;
+            return await _context.Blogs
+                                 .Include(b => b.Author)
+                                 .Where(b => b.Status == "Approved")
+                                 .ToListAsync();
         }
+
 
         public async Task<Blog> GetByIdAsync(int id)
         {
-            var Blogs = await _context.Blogs.FirstOrDefaultAsync(c => c.BlogId == id);
-            return Blogs;
+            return await _context.Blogs
+                                 .Include(b => b.Author) 
+                                 .FirstOrDefaultAsync(b => b.BlogId == id);
         }
+
     }
 }

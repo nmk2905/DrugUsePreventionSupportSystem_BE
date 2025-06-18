@@ -24,17 +24,44 @@ namespace API.Controllers
         public async Task<IActionResult> GetAllUsers()
         {
             var users = await _userService.GetAllUsersAsync();
-            return Ok(users);
+
+            var userDTOs = users.Select(u => new UserDTO
+            {
+                UserId = u.UserId,
+                FullName = u.FullName,
+                Address = u.Address,
+                Email = u.Email,
+                DateOfBirth = u.DateOfBirth,
+                Password = u.Password,
+                CreatedDate = u.CreatedDate,
+                RoleId = u.RoleId
+            }).ToList();
+
+            return Ok(userDTOs);
         }
+
 
         [HttpGet("All-blogs-for-admin")]
         [Authorize(Roles = "1")]
         public async Task<IActionResult> GetPendingBlogs()
         {
             var blogs = await _blogService.GetAllForAdmin();
-            var pending = blogs.Where(b => b.Status == "Pending").ToList();
+            var pending = blogs.Where(b => b.Status == "Pending")
+                               .Select(b => new BlogDTO
+                               {
+                                   BlogId = b.BlogId,
+                                   Title = b.Title,
+                                   Content = b.Content,
+                                   AuthorId = b.AuthorId,
+                                   PublishedDate = b.PublishedDate,
+                                   Status = b.Status,
+                                   AuthorFullName = b.Author?.FullName
+                               })
+                               .ToList();
+
             return Ok(pending);
         }
+
 
         // Admin duyệt blog
         [HttpPut("Approve/{id}")]
@@ -63,6 +90,31 @@ namespace API.Controllers
 
             return Ok("Rejected");
         }
+
+        public class UserDTO
+        {
+            public int UserId { get; set; }
+            public string FullName { get; set; }
+            public string Address { get; set; }
+            public string Email { get; set; }
+            public DateOnly DateOfBirth { get; set; }
+            public string Password { get; set; }
+            public DateTime? CreatedDate { get; set; }
+            public int? RoleId { get; set; }
+        }
+
+        public class BlogDTO
+        {
+            public int BlogId { get; set; }
+            public string Title { get; set; }
+            public string Content { get; set; }
+            public int? AuthorId { get; set; }
+            public DateTime? PublishedDate { get; set; }
+            public string Status { get; set; }
+            public string AuthorFullName { get; set; }
+        }
+
+
     }
 
 }

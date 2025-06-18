@@ -18,20 +18,50 @@ namespace API.Controllers
         }
 
         [HttpGet("All-Consultants")]
-        [Authorize(Roles = "1")] //admin
+        [Authorize(Roles = "1")] // Admin
         public async Task<IActionResult> GetAllConsultants()
         {
             var consultants = await _consultantService.GetAllConsultant();
-            return Ok(consultants);
+
+            var result = consultants.Select(c => new ConsultantSimpleDTO
+            {
+                Number = c.Number,
+                ConsultantId = c.ConsultantId,
+                FullName = c.ConsultantNavigation?.FullName ?? "",
+                Specification = c.Specification,
+                Qualifications = c.Qualifications,
+                ExperienceYears = c.ExperienceYears,
+                IsActive = c.IsActive   
+            }).ToList();
+
+            return Ok(result);
         }
+
+
 
         [HttpGet("{id}")]
         [Authorize(Roles = "1,2")] // Admin, Cons
         public async Task<IActionResult> GetConsultantById(int id)
         {
-            var consultant = await _consultantService.GetConsultantById(id);
-            return consultant == null ? NotFound() : Ok(consultant);
+            var c = await _consultantService.GetConsultantById(id);
+
+            if (c == null) return NotFound();
+
+            var dto = new ConsultantSimpleDTO
+            {
+                Number = c.Number,
+                ConsultantId = c.ConsultantId,
+                FullName = c.ConsultantNavigation?.FullName ?? "",
+                Specification = c.Specification,
+                Qualifications = c.Qualifications,
+                ExperienceYears = c.ExperienceYears,
+                IsActive = c.IsActive
+            };
+
+            return Ok(dto);
         }
+
+
 
         [HttpPut("Update-profile")]
         [Authorize(Roles = "2")] 
@@ -54,7 +84,7 @@ namespace API.Controllers
         }
 
         [HttpGet("Available")]
-        [Authorize(Roles = "3")] // Customer gọi lấy các active cons
+        [Authorize(Roles = "1,3")] // Customer gọi lấy các active cons
         public async Task<IActionResult> GetAvailableConsultants()
         {
             var consultants = await _consultantService.GetActiveConsultantsAsync();
@@ -62,7 +92,7 @@ namespace API.Controllers
             var result = consultants.Select(c => new ConsultantPreview
             {
                 ConsultantId = c.ConsultantId,
-                FullName = c.ConsultantNavigation?.FullName,
+                FullName = c.ConsultantNavigation?.FullName ?? "",
                 Specification = c.Specification,
                 ExperienceYears = c.ExperienceYears
             });
@@ -87,6 +117,18 @@ namespace API.Controllers
         public string Specification { get; set; }
         public int ExperienceYears { get; set; }
     }
+
+    public class ConsultantSimpleDTO
+    {
+        public int Number { get; set; }
+        public int ConsultantId { get; set; }
+        public string FullName { get; set; }
+        public string Specification { get; set; }
+        public string Qualifications { get; set; }
+        public int ExperienceYears { get; set; }
+        public bool IsActive { get; set; }
+    }
+
 
 
 }

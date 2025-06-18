@@ -15,12 +15,17 @@ namespace Repositories
 
         public async Task<List<Consultant>> GetAllConsultant()
         {
-            return _context.Consultants.ToList();
+            return await _context.Consultants
+                                 .Include(c => c.ConsultantNavigation) 
+                                 .ToListAsync();
         }
 
         public async Task<Consultant> GetConsultantById(int id)
         {
-            return await _context.Consultants.FirstOrDefaultAsync(i => i.ConsultantId == id);
+            return await _context.Consultants
+                                 .Include(c => c.ConsultantNavigation) 
+                                 .FirstOrDefaultAsync(i => i.ConsultantId == id);
         }
+
     }
 }

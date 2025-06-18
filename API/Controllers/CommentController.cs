@@ -19,20 +19,48 @@ namespace API.Controllers
             _commentService = commentService;
         }
 
-        //Get all
         [HttpGet("GetAll")]
-        [EnableQuery]
-        public async Task<IEnumerable<Comment>> Get()
+        public async Task<IActionResult> Get()
         {
-            return await _commentService.GetAll();
+            var comments = await _commentService.GetAll();
+
+            var dtoList = comments.Select(c => new CommentDTO
+            {
+                CommentId = c.CommentId,
+                Content = c.Content,
+                PostDate = c.PostDate,
+                BlogId = c.BlogId,
+                BlogTitle = c.Blog?.Title ?? "",
+                UserId = c.UserId,
+                UserFullName = c.User?.FullName ?? ""
+            }).ToList();
+
+            return Ok(dtoList);
         }
 
-        //Get by id
+
         [HttpGet("GetById/{id}")]
-        public async Task<Comment> GetById(int id)
+        public async Task<IActionResult> GetById(int id)
         {
-            return await _commentService.GetById(id);
+            var comment = await _commentService.GetById(id);
+
+            if (comment == null)
+                return NotFound();
+
+            var dto = new CommentDTO
+            {
+                CommentId = comment.CommentId,
+                Content = comment.Content,
+                PostDate = comment.PostDate,
+                BlogId = comment.BlogId,
+                BlogTitle = comment.Blog?.Title ?? "",
+                UserId = comment.UserId,
+                UserFullName = comment.User?.FullName ?? ""
+            };
+
+            return Ok(dto);
         }
+
 
 
         public sealed record PostCommentRequest(int BlogId, string Content);
@@ -104,14 +132,6 @@ namespace API.Controllers
             return Ok("Deleted successfully");
         }
 
-        public sealed record MyCommentResponse(
-    int CommentId,
-    string Content,
-    DateTime? PostDate,
-    int BlogId,
-    string BlogTitle,
-    int? BlogAuthorId
-);
 
         [HttpGet("My-Comment")]
         [Authorize(Roles = "3")]
@@ -136,13 +156,7 @@ namespace API.Controllers
             return Ok(myComments);
         }
 
-        public sealed record CommentByBlogResponse(
-    int CommentId,
-    string Content,
-    DateTime? PostDate,
-    int? UserId,
-    string UserName
-);
+        
 
         [HttpGet("All-Comment-By-Blog/{blogId}")]
         public async Task<IActionResult> GetCommentsByBlog(int blogId)
@@ -162,6 +176,35 @@ namespace API.Controllers
 
             return Ok(comments);
         }
+
+        public class CommentDTO
+        {
+            public int CommentId { get; set; }
+            public string Content { get; set; }
+            public DateTime? PostDate { get; set; }
+            public int? BlogId { get; set; }
+            public string BlogTitle { get; set; }
+            public int? UserId { get; set; }
+            public string UserFullName { get; set; }
+        }
+
+
+        public sealed record MyCommentResponse(
+    int CommentId,
+    string Content,
+    DateTime? PostDate,
+    int BlogId,
+    string BlogTitle,
+    int? BlogAuthorId
+);
+
+        public sealed record CommentByBlogResponse(
+    int CommentId,
+    string Content,
+    DateTime? PostDate,
+    int? UserId,
+    string UserName
+);
 
 
 

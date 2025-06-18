@@ -22,32 +22,77 @@ namespace API.Controllers
 
         //Get all
         [HttpGet("Get-All-Approved")]
-        [EnableQuery]
-        public async Task<List<Blog>> GetAllApproved()
+        public async Task<List<BlogDTO>> GetAllApproved()
         {
-            return await _blogService.GetAllApproved();
+            var blogs = await _blogService.GetAllApproved();
+            var dtos = blogs.Select(b => new BlogDTO
+            {
+                BlogId = b.BlogId,
+                Title = b.Title,
+                Content = b.Content,
+                AuthorId = b.AuthorId,
+                PublishedDate = b.PublishedDate,
+                Status = b.Status,
+                AuthorFullName = b.Author?.FullName
+            }).ToList();
+
+            return dtos;
         }
 
-        //List post cua user cu the da post
+
+
         [HttpGet("My-Blogs")]
         [Authorize(Roles = "3")]
         public async Task<IActionResult> GetMyBlogs()
         {
             var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+
             var all = await _blogService.GetAllForAdmin();
-            var mine = all.Where(b => b.AuthorId == userId).ToList();
+
+            var mine = all.Where(b => b.AuthorId == userId)
+                          .Select(b => new BlogDTO
+                          {
+                              BlogId = b.BlogId,
+                              Title = b.Title,
+                              Content = b.Content,
+                              AuthorId = b.AuthorId,
+                              PublishedDate = b.PublishedDate,
+                              Status = b.Status,
+                              AuthorFullName = b.Author?.FullName
+                          })
+                          .ToList();
+
             return Ok(mine);
         }
 
 
 
-        //Get by id
+
         [HttpGet("GetById/{id}")]
         [Authorize(Roles = "1,3")]
-        public async Task<Blog> GetById(int id)
+        public async Task<ActionResult<BlogDTO>> GetById(int id)
         {
-            return await _blogService.GetById(id);
+            var blog = await _blogService.GetById(id);
+            if (blog == null)
+            {
+                return NotFound();
+            }
+
+            var dto = new BlogDTO
+            {
+                BlogId = blog.BlogId,
+                Title = blog.Title,
+                Content = blog.Content,
+                AuthorId = blog.AuthorId,
+                PublishedDate = blog.PublishedDate,
+                Status = blog.Status,
+                AuthorFullName = blog.Author?.FullName
+            };
+
+            return Ok(dto);
         }
+
+
 
         [HttpPost("Post-blog")]
         [Authorize(Roles = "3")]
@@ -114,5 +159,17 @@ namespace API.Controllers
         {
             return await _blogService.Delete(id);
         }
+
+        public class BlogDTO
+        {
+            public int BlogId { get; set; }
+            public string Title { get; set; }
+            public string Content { get; set; }
+            public int? AuthorId { get; set; }
+            public DateTime? PublishedDate { get; set; }
+            public string Status { get; set; }
+            public string AuthorFullName { get; set; } 
+        }
+
     }
 }
