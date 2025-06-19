@@ -13,9 +13,24 @@ namespace Repositories
     {
         public AppointmentRepository() { }
 
-        public async Task<Appointment> GetAppointmentByUserId(int id)
+        public async Task<List<Appointment>> GetAppointmentsByUserId(int userId)
         {
-            return await _context.Appointments.FirstOrDefaultAsync(i => i.UserId == id);
+            return await _context.Appointments
+                .Include(a => a.User)
+                .Include(a => a.Consultant)
+                    .ThenInclude(c => c.ConsultantNavigation)
+                .Where(a => a.UserId == userId)
+                .ToListAsync();
         }
+
+        public async Task<Appointment> GetByIdAsync(int id)
+        {
+            return await _context.Appointments
+                .Include(a => a.User)
+                .Include(a => a.Consultant)
+                    .ThenInclude(c => c.ConsultantNavigation)
+                .FirstOrDefaultAsync(a => a.AppointmentId == id);
+        }
+
     }
 }

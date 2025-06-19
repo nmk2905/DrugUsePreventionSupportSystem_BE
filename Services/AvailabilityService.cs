@@ -12,6 +12,8 @@ namespace Services
     {
         Task<List<ConsultantsAvailability>> GetAvailableSlots(int consultantId, DateOnly from, DateOnly to);
         Task<ConsultantsAvailability> CreateSlot(int consultantId, DateOnly date, TimeOnly start, TimeOnly end);
+        Task<ConsultantsAvailability> GetByIdWithConsultantAsync(int id);
+        Task<List<ConsultantsAvailability>> GetAvailableSlotsWithConsultant(int consultantId, DateOnly from, DateOnly to);
     }
 
     public class AvailabilityService : IAvailabilityService
@@ -23,16 +25,22 @@ namespace Services
             _repo = new AvailabilityRepository();
         }
 
+        public async Task<ConsultantsAvailability> GetByIdWithConsultantAsync(int id)
+        {
+            return await _repo.GetByIdWithConsultantAsync(id);
+        }
+
+        public async Task<List<ConsultantsAvailability>> GetAvailableSlotsWithConsultant(int consultantId, DateOnly from, DateOnly to)
+        {
+            return await _repo.GetAvailableSlotsWithConsultant(consultantId, from, to);
+        }
+
+
         public async Task<List<ConsultantsAvailability>> GetAvailableSlots(int consultantId, DateOnly from, DateOnly to)
         {
-            var all = await _repo.GetAllAsync();
-            return all
-                .Where(ca => ca.ConsultantId == consultantId
-                             && ca.IsAvailable
-                             && ca.SpecificDate >= from
-                             && ca.SpecificDate <= to)
-                .ToList();
+            return await _repo.GetAvailableSlotsWithConsultant(consultantId, from, to);
         }
+
 
         public async Task<ConsultantsAvailability> CreateSlot(int consultantId, DateOnly date, TimeOnly start, TimeOnly end)
         {

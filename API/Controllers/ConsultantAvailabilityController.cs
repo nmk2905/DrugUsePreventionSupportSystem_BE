@@ -19,41 +19,81 @@ namespace API.Controllers
         }
 
         [HttpGet("AvailableSlots")]
-        [Authorize(Roles = "3")] // dành cho customer - lấy lịch rảnh của cons chỉ định
+        [Authorize(Roles = "3")] // user
         public async Task<IActionResult> GetAvailableSlots(
-        [FromQuery] int consultantId,
-        [FromQuery] string from,
-        [FromQuery] string to)
+            [FromQuery] int consultantId,
+            [FromQuery] string from,
+            [FromQuery] string to)
         {
             if (!DateOnly.TryParse(from, out var fromDate) || !DateOnly.TryParse(to, out var toDate))
                 return BadRequest("from/to không hợp lệ. Định dạng đúng: yyyy-MM-dd");
 
             var slots = await _availabilityService.GetAvailableSlots(consultantId, fromDate, toDate);
-            return Ok(slots);
+
+            var result = slots.Select(s => new SlotDto
+            {
+                AvailabilityId = s.AvailabilityId,
+                SpecificDate = s.SpecificDate,
+                StartTime = s.StartTime,
+                EndTime = s.EndTime,
+                ConsultantName = s.Consultant?.ConsultantNavigation?.FullName ?? "(Không rõ)"
+            });
+
+            return Ok(result);
         }
+
 
 
         [HttpGet("GetAvailableSlots")]
-        [Authorize(Roles = "2")] //lấy lịch trống của cons -  dành cho cons
+        [Authorize(Roles = "2")] // tư vấn viên
         public async Task<IActionResult> GetAvailableSlots([FromQuery] string from, [FromQuery] string to)
         {
-            var fromDate = DateOnly.Parse(from);
-            var toDate = DateOnly.Parse(to);
+            if (!DateOnly.TryParse(from, out var fromDate) || !DateOnly.TryParse(to, out var toDate))
+                return BadRequest("from/to không hợp lệ");
 
-            var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
-            var slots = await _availabilityService.GetAvailableSlots(userId, fromDate, toDate);
-            return Ok(slots);
+            var consultantId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+
+            var slots = await _availabilityService.GetAvailableSlotsWithConsultant(consultantId, fromDate, toDate);
+
+            var result = slots.Select(s => new ConsultantSlotDto
+            {
+                AvailabilityId = s.AvailabilityId,
+                ConsultantId = s.ConsultantId,
+                SpecificDate = s.SpecificDate,
+                StartTime = s.StartTime,
+                EndTime = s.EndTime,
+                IsAvailable = s.IsAvailable,
+                Consultant = s.Consultant?.ConsultantNavigation?.FullName ?? "(Không rõ)"
+            });
+
+            return Ok(result);
         }
+
 
 
         [HttpPost("CreateSlot")]
-        [Authorize(Roles = "2")] //cons
+        [Authorize(Roles = "2")]
         public async Task<IActionResult> CreateSlot([FromBody] CreateSlotRequest request)
         {
-            var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
-            var result = await _availabilityService.CreateSlot(userId, request.SpecificDate, request.StartTime, request.EndTime);
+            var consultantId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+
+            var slot = await _availabilityService.CreateSlot(consultantId, request.SpecificDate, request.StartTime, request.EndTime);
+
+            var fullSlot = await _availabilityService.GetByIdWithConsultantAsync(slot.AvailabilityId);
+
+            var result = new SlotDto
+            {
+                AvailabilityId = fullSlot.AvailabilityId,
+                SpecificDate = fullSlot.SpecificDate,
+                StartTime = fullSlot.StartTime,
+                EndTime = fullSlot.EndTime,
+                ConsultantName = fullSlot.Consultant?.ConsultantNavigation?.FullName ?? "(Không rõ)"
+            };
+
             return Ok(result);
         }
+
+
 
         public class CreateSlotRequest
         {
@@ -61,6 +101,28 @@ namespace API.Controllers
             public TimeOnly StartTime { get; set; }
             public TimeOnly EndTime { get; set; }
         }
+
+        public class SlotDto
+        {
+            public int AvailabilityId { get; set; }
+            public DateOnly? SpecificDate { get; set; }
+            public TimeOnly? StartTime { get; set; }
+            public TimeOnly? EndTime { get; set; }
+            public string ConsultantName { get; set; }
+        }
+
+        public class ConsultantSlotDto
+        {
+            public int AvailabilityId { get; set; }
+            public int? ConsultantId { get; set; }
+            public DateOnly? SpecificDate { get; set; }
+            public TimeOnly? StartTime { get; set; }
+            public TimeOnly? EndTime { get; set; }
+            public bool IsAvailable { get; set; }
+            public string Consultant { get; set; }
+        }
+
+
 
     }
 }

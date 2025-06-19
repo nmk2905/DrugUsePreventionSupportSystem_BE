@@ -75,7 +75,6 @@ public partial class Drug_use_prevention_systemContext : DbContext
     }
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     => optionsBuilder.UseSqlServer(GetConnectionString("DefaultConnection"));
-
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<AgeGroup>(entity =>
@@ -102,8 +101,7 @@ public partial class Drug_use_prevention_systemContext : DbContext
                 .HasColumnType("datetime")
                 .HasColumnName("Created_date");
             entity.Property(e => e.MeetingLink)
-                .IsRequired()
-                .HasMaxLength(200)
+                .HasMaxLength(500)
                 .HasColumnName("Meeting_link");
             entity.Property(e => e.Status)
                 .IsRequired()

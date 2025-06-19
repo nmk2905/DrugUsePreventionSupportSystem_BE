@@ -84,7 +84,7 @@ namespace API.Controllers
         }
 
         [HttpGet("Available")]
-        [Authorize(Roles = "1,3")] // Customer gọi lấy các active cons
+        [Authorize(Roles = "1,3")] // show active cons
         public async Task<IActionResult> GetAvailableConsultants()
         {
             var consultants = await _consultantService.GetActiveConsultantsAsync();

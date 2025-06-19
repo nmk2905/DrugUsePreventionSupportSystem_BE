@@ -10,7 +10,7 @@ namespace Services
         Task<Appointment> BookAppointmentAsync(int userId, int availabilityId);
         Task<List<Appointment>> GetAppointmentsByUserIdAsync(int userId);
         Task<bool> CancelAppointmentAsync(int appointmentId, int userId);
-        Task<bool> UpdateStatusAsync(int appointmentId, string status);
+        Task<bool> UpdateStatusAsync(int appointmentId, string status, string? meetingLink = null);
     }
 
     public class AppointmentService : IAppointmentService
@@ -36,61 +36,80 @@ namespace Services
                 ConsultantId = slot.ConsultantId,
                 AvailabilityId = availabilityId,
                 CreatedDate = DateTime.UtcNow,
-                Status = AppointmentStatus.Pending
+                Status = AppointmentStatus.Pending,
+                MeetingLink = null
             };
-            try
-            {
-                await _appointmentRepo.CreateAsync(appointment);
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("Lỗi khi tạo appointment: " + ex.InnerException?.Message ?? ex.Message);
-            }
 
+            await _appointmentRepo.CreateAsync(appointment);
+
+            // Cập nhật lại slot
             slot.IsAvailable = false;
             await _availabilityRepo.UpdateAsync(slot);
 
-            return appointment;
+            var created = await _appointmentRepo.GetByIdAsync(appointment.AppointmentId);
+
+            return created;
         }
+
 
 
         public async Task<List<Appointment>> GetAppointmentsByUserIdAsync(int userId)
         {
-            var all = await _appointmentRepo.GetAllAsync();
-            return all.Where(a => a.UserId == userId || a.Consultant?.ConsultantNavigation?.UserId == userId).ToList();
+            return await _appointmentRepo.GetAppointmentsByUserId(userId);
         }
+
 
         public async Task<bool> CancelAppointmentAsync(int appointmentId, int userId)
         {
             var appointment = await _appointmentRepo.GetByIdAsync(appointmentId);
+
             if (appointment == null || appointment.UserId != userId)
                 return false;
 
             if (appointment.Status != AppointmentStatus.Pending)
                 throw new Exception("Chỉ được hủy lịch ở trạng thái Pending.");
 
-            var slot = await _availabilityRepo.GetByIdAsync(appointment.AvailabilityId ?? 0);
-            if (slot != null)
+            appointment.Status = AppointmentStatus.Canceled;
+            await _appointmentRepo.UpdateAsync(appointment);
+
+            // Mở lại slot nếu cần
+            if (appointment.AvailabilityId.HasValue)
             {
-                slot.IsAvailable = true;
-                await _availabilityRepo.UpdateAsync(slot);
+                var slot = await _availabilityRepo.GetByIdAsync(appointment.AvailabilityId.Value);
+                if (slot != null)
+                {
+                    slot.IsAvailable = true;
+                    await _availabilityRepo.UpdateAsync(slot);
+                }
             }
 
-            await _appointmentRepo.RemoveAsync(appointment);
             return true;
         }
 
-        public async Task<bool> UpdateStatusAsync(int appointmentId, string status)
-        {
-            if (!new[] { AppointmentStatus.Pending, AppointmentStatus.Confirmed, AppointmentStatus.Completed, AppointmentStatus.Canceled }.Contains(status))
-                throw new Exception("Trạng thái không hợp lệ.");
 
+        public async Task<bool> UpdateStatusAsync(int appointmentId, string status, string? meetingLink = null)
+        {
             var appointment = await _appointmentRepo.GetByIdAsync(appointmentId);
             if (appointment == null) return false;
 
+            if (!new[] { AppointmentStatus.Pending, AppointmentStatus.Confirmed, AppointmentStatus.Completed, AppointmentStatus.Canceled }
+                .Contains(status))
+                throw new Exception("Trạng thái không hợp lệ.");
+
             appointment.Status = status;
+
+            // Gán link nếu admin duyệt
+            if (status == AppointmentStatus.Confirmed)
+            {
+                if (string.IsNullOrWhiteSpace(meetingLink))
+                    throw new Exception("Meeting link không được bỏ trống khi xác nhận lịch.");
+
+                appointment.MeetingLink = meetingLink;
+            }
+
             await _appointmentRepo.UpdateAsync(appointment);
             return true;
         }
+
     }
 }

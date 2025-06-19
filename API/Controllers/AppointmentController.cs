@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Repositories.Enums.Appointment;
 using Repositories.Models;
 using Services;
 using System.Security.Claims;
@@ -18,45 +19,74 @@ namespace API.Controllers
         }
 
         [HttpPost("Book")]
-        [Authorize(Roles = "3")]
+        [Authorize(Roles = "3")] // user
         public async Task<IActionResult> Book([FromBody] BookAppointmentRequest request)
         {
             var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+
             try
             {
                 var appointment = await _appointmentService.BookAppointmentAsync(userId, request.AvailabilityId);
-                return Ok(appointment);
+
+                var dto = new AppointmentDto
+                {
+                    AppointmentId = appointment.AppointmentId,
+                    Status = appointment.Status,
+                    CreatedDate = appointment.CreatedDate,
+                    MeetingLink = appointment.MeetingLink,
+                    MaterialId = appointment.Material,
+                    ConsultantName = appointment.Consultant?.ConsultantNavigation?.FullName,
+                    UserName = appointment.User?.FullName
+                };
+
+                return Ok(dto);
             }
             catch (Exception ex)
             {
-                return BadRequest(new { message = ex.Message });
+                return BadRequest(new { message = "Lỗi khi tạo appointment: " + (ex.InnerException?.Message ?? ex.Message) });
             }
         }
 
+
         [HttpGet("MyAppointments")]
-        [Authorize(Roles = "2,3")] //cons, customer
+        [Authorize(Roles = "2,3")]
         public async Task<IActionResult> MyAppointments()
         {
             var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
-            var result = await _appointmentService.GetAppointmentsByUserIdAsync(userId);
+            var appointments = await _appointmentService.GetAppointmentsByUserIdAsync(userId);
+
+            var result = appointments.Select(a => new AppointmentDto
+            {
+                AppointmentId = a.AppointmentId,
+                ConsultantName = a.Consultant?.ConsultantNavigation?.FullName,
+                UserName = a.User?.FullName,
+                Status = a.Status,
+                CreatedDate = a.CreatedDate,
+                MeetingLink = a.MeetingLink,
+                MaterialId = a.Material
+            }).ToList();
+
             return Ok(result);
         }
 
+
         [HttpDelete("{id}")]
-        [Authorize(Roles = "3")] //cons
+        [Authorize(Roles = "3")] // User
         public async Task<IActionResult> Cancel(int id)
         {
             var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
             var success = await _appointmentService.CancelAppointmentAsync(id, userId);
-            return success ? Ok(new { message = "Hủy thành công" }) : NotFound();
+            return success ? Ok(new { message = "Hủy lịch thành công" }) : NotFound();
         }
 
-        [HttpPut("UpdateStatus")]
-        [Authorize(Roles = "1,2")] // admin, cons
-        public async Task<IActionResult> UpdateStatus([FromBody] UpdateStatusRequest request)
+
+
+        [HttpPut("Approve-appointment")]
+        [Authorize(Roles = "1")] // Admin duyệt
+        public async Task<IActionResult> ApproveAppointment([FromBody] ApproveAppointmentRequest request)
         {
-            var success = await _appointmentService.UpdateStatusAsync(request.AppointmentId, request.Status);
-            return success ? Ok(new { message = "Cập nhật thành công" }) : NotFound();
+            var success = await _appointmentService.UpdateStatusAsync(request.AppointmentId, AppointmentStatus.Confirmed, request.MeetingLink);
+            return success ? Ok(new { message = "Lịch đã được duyệt và gửi link thành công." }) : NotFound();
         }
     }
 
@@ -65,9 +95,21 @@ namespace API.Controllers
         public int AvailabilityId { get; set; }
     }
 
-    public class UpdateStatusRequest
+    public class ApproveAppointmentRequest
     {
         public int AppointmentId { get; set; }
-        public string Status { get; set; }
+        public string MeetingLink { get; set; }
     }
+
+    public class AppointmentDto
+    {
+        public int AppointmentId { get; set; }
+        public string ConsultantName { get; set; }
+        public string UserName { get; set; }
+        public string Status { get; set; }
+        public string? MeetingLink { get; set; }
+        public int? MaterialId { get; set; }
+        public DateTime CreatedDate { get; set; }
+    }
+
 }
