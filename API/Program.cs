@@ -106,14 +106,21 @@ builder.Services.AddSwaggerGen(option =>
     });
 });
 
+//Listener gate 80 for the container
+//builder.WebHost.ConfigureKestrel(serverOptions =>
+//{
+//	serverOptions.ListenAnyIP(80);
+//});
+
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+// Always enable Swagger (for Docker container)
+app.UseSwagger();
+app.UseSwaggerUI(c =>
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+	c.SwaggerEndpoint("/swagger/v1/swagger.json", "API v1");
+});
+
 //CORS
 app.UseCors(options => options.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
 
