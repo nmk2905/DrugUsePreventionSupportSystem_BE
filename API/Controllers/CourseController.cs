@@ -1,6 +1,7 @@
 ﻿//using API.Dtos.Course;
 //using API.Mappers;
 using DTO.Course;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Identity.Client;
@@ -8,6 +9,7 @@ using Repositories;
 using Repositories.DBContext;
 using Repositories.Models;
 using Services;
+using System.Security.Claims;
 
 namespace api.controllers
 {
@@ -67,6 +69,26 @@ namespace api.controllers
 				return NotFound();
 
 			return NoContent();
+		}
+
+		[HttpPost("Register/{courseId}")]
+		[Authorize(Roles = "3")]
+		public async Task<IActionResult> RegisterCourse([FromRoute] int courseId)
+		{
+			try
+			{
+				var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+
+				var sucess = await _service.RegisterCourseAsync(userId, courseId);
+				if (!sucess)
+					return BadRequest(new { message = "Failed to register" });
+
+				return Ok(new { message = "Course register successfully" });
+			}
+			catch (Exception ex)
+			{
+				return BadRequest(new { error = ex.Message });
+			}
 		}
 	}
 }

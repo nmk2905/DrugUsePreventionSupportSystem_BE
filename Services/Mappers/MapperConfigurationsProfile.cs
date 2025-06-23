@@ -16,6 +16,7 @@ namespace Services.Mappers
             CreateMap<CourseCategory, CourseCategoryDto>();
             CreateMap<CreateCourseCategoryRequestDto, CourseCategory>();
 
+
         }
 
     }
