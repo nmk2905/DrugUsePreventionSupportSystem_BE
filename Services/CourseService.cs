@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
 using DTO.Course;
 using DTO.CourseCategory;
+using Microsoft.EntityFrameworkCore;
 using Repositories;
+using Repositories.DBContext;
 using Repositories.Models;
 using System;
 using System.Collections.Generic;
@@ -19,6 +21,7 @@ namespace Services
 		Task<CourseDto?> UpdateCourseAsync(int id, UpdateCourseRequestDto course);
 		Task<Course?> DeleteCourseAsync(int id);
 		Task<Course?> GetCourseByIdAsync(int id);
+		Task<bool> RegisterCourseAsync(int userId, int courseId);
 	}
 
 	public class CourseService : ICourseService
@@ -26,12 +29,14 @@ namespace Services
 		private readonly CourseRepository _repo;
 		private readonly IMapper _mapper;
 		private readonly CourseCategoryRepository _categoryRepo;
+		private readonly Drug_use_prevention_systemContext _context;
 
-		public CourseService(CourseRepository repo, IMapper mapper, CourseCategoryRepository categoryRepo)
+		public CourseService(CourseRepository repo, IMapper mapper, CourseCategoryRepository categoryRepo, Drug_use_prevention_systemContext context)
 		{
 			_repo = repo;
 			_mapper = mapper;
 			_categoryRepo = categoryRepo;
+			_context = context;
 		}
 
 		public async Task<CourseDto?> CreateCourseAsync(CreateCourseRequestDto courseDto)
@@ -63,6 +68,42 @@ namespace Services
 		public async Task<Course?> GetCourseByIdAsync(int id)
 		{
 			return await _repo.GetByIdAsync(id);
+		}
+
+		public async Task<bool> RegisterCourseAsync(int userId, int courseId)
+		{
+			//check if user already registered for this course
+			var hasRegistered = await _context.CourseRegisters.AnyAsync(cr => cr.UserId == userId && cr.CourseId == courseId);
+			if (hasRegistered)
+				throw new Exception("User is already registered for this course");
+			
+			//check if course exists
+			var course = await _repo.GetByIdAsync(courseId);
+			if (course == null)
+			{
+				throw new Exception("Course not found");
+			}
+
+			//check if user login
+			var userExist = await _context.Users.AnyAsync(u => u.UserId == userId);
+			if (!userExist)
+				throw new Exception("User need to login to register");
+
+			//check if user registered for this course successfully
+			var registerExist = await _context.CourseRegisters.AnyAsync(cr => cr.UserId == userId && cr.CourseId == courseId);
+			if (registerExist)
+				throw new Exception("User is already registered for this course");
+
+			var courseRegister = new CourseRegister
+			{
+				UserId = userId,
+				CourseId = courseId,
+				RegisterDate = DateTime.UtcNow,
+			};
+
+			_context.CourseRegisters.Add(courseRegister);
+			await _context.SaveChangesAsync();
+			return true;
 		}
 
 		public async Task<CourseDto?> UpdateCourseAsync(int id, UpdateCourseRequestDto courseDto)

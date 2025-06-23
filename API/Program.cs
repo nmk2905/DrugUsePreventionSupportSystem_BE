@@ -15,7 +15,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-builder.Services.AddAutoMapper(typeof(MapperConfigurationsProfile));
+//builder.Services.AddAutoMapper(typeof(MapperConfigurationsProfile));
 
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IBlogService, BlogService>();
@@ -25,12 +25,14 @@ builder.Services.AddScoped<ICourseCategory, CourseCategoryService>();
 builder.Services.AddScoped<IAvailabilityService, AvailabilityService>();
 builder.Services.AddScoped<IConsultantService, ConsultantService>();
 builder.Services.AddScoped<IAppointmentService, AppointmentService>();
-
+builder.Services.AddScoped<ICourseRegisterService, CourseRegisterService>();
 
 builder.Services.AddScoped<CourseRepository>();
 builder.Services.AddScoped<CourseCategoryRepository>();
+builder.Services.AddScoped<CourseRegisterRepository>();
 
 builder.Services.AddControllers();
+builder.Services.AddAutoMapper(typeof(MapperConfigurationsProfile));
 
 builder.Services.AddDbContext<Drug_use_prevention_systemContext>(options =>
 {
@@ -115,11 +117,18 @@ builder.Services.AddSwaggerGen(option =>
 var app = builder.Build();
 
 // Always enable Swagger (for Docker container)
-app.UseSwagger();
-app.UseSwaggerUI(c =>
+//app.UseSwagger();
+//app.UseSwaggerUI(c =>
+//{
+//	c.SwaggerEndpoint("/swagger/v1/swagger.json", "API v1");
+//});
+
+// Configure the HTTP request pipeline.
+if (app.Environment.IsDevelopment())
 {
-	c.SwaggerEndpoint("/swagger/v1/swagger.json", "API v1");
-});
+	app.UseSwagger();
+	app.UseSwaggerUI();
+}
 
 //CORS
 app.UseCors(options => options.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());

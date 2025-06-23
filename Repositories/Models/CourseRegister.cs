@@ -2,6 +2,7 @@
 #nullable disable
 using System;
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 namespace Repositories.Models;
 
@@ -13,7 +14,8 @@ public partial class CourseRegister
 
     public DateTime? RegisterDate { get; set; }
 
-    public virtual Course Course { get; set; }
-
-    public virtual User User { get; set; }
+    [JsonIgnore]
+	public virtual Course Course { get; set; }
+    [JsonIgnore]
+	public virtual User User { get; set; }
 }
