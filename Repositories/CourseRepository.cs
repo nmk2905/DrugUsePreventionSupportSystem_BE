@@ -13,12 +13,14 @@ namespace Repositories
 		{
 			await _context.Courses.AddAsync(course);
 			await _context.SaveChangesAsync();
-			return await _context.Courses.Include(c => c.CategoryNavigation).FirstOrDefaultAsync(c => c.CourseId == course.CourseId);
+			return await _context.Courses.Include(c => c.CategoryNavigation)
+										 .FirstOrDefaultAsync(c => c.CourseId == course.CourseId);
 		}
 
 		public async Task<Course?> DeleteAsync(int id)
 		{
-			var courseModel = await _context.Courses.FirstOrDefaultAsync(c => c.CourseId == id);
+			var courseModel = await _context.Courses.Include(c => c.CourseQuestions)
+													.FirstOrDefaultAsync(c => c.CourseId == id);
 
 			if (courseModel == null)
 				return null;
@@ -31,17 +33,22 @@ namespace Repositories
 
 		public async Task<List<Course>> GetAllCourseAsync()
 		{
-			return await _context.Courses.Include(c => c.CategoryNavigation).ToListAsync();
+			return await _context.Courses.Include(c => c.CategoryNavigation)
+										 .Include(c => c.CourseQuestions)
+										 .ToListAsync();
 		}
 
 		public async Task<Course?> GetByIdAsync(int id)
 		{
-			return await _context.Courses.Include(c => c.CategoryNavigation).FirstOrDefaultAsync(i => i.CourseId == id);
+			return await _context.Courses.Include(c => c.CategoryNavigation)
+										 .Include(c => c.CourseQuestions)
+										 .FirstOrDefaultAsync(i => i.CourseId == id);
 		}
 
 		public async Task<Course?> UpdateAsync(int id, Course course)
 		{
-			var courseModel = await _context.Courses.Include(c => c.CategoryNavigation).FirstOrDefaultAsync(c => c.CourseId == id);
+			var courseModel = await _context.Courses.Include(c => c.CategoryNavigation)
+													.FirstOrDefaultAsync(c => c.CourseId == id);
 
 			if (courseModel == null)
 				return null;
@@ -56,5 +63,7 @@ namespace Repositories
 
 			return courseModel;
 		}
+
+
 	}
 }
