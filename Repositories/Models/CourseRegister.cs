@@ -16,6 +16,7 @@ public partial class CourseRegister
 
     [JsonIgnore]
 	public virtual Course Course { get; set; }
+
     [JsonIgnore]
 	public virtual User User { get; set; }
 }

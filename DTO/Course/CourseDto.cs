@@ -1,4 +1,5 @@
 ﻿using DTO.CourseCategory;
+using DTO.CourseQuestion;
 using System.Text.Json.Serialization;
 
 namespace DTO.Course
@@ -21,5 +22,6 @@ namespace DTO.Course
 		[JsonIgnore]
 		public int? CategoryId { get; set; }
 		public CourseCategoryDto Category { get; set; }
+		public List<CourseQuestionDto> CourseQuestions { get; set; } = new List<CourseQuestionDto>();
 	}
 }

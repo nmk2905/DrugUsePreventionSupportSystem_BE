@@ -26,10 +26,12 @@ builder.Services.AddScoped<IAvailabilityService, AvailabilityService>();
 builder.Services.AddScoped<IConsultantService, ConsultantService>();
 builder.Services.AddScoped<IAppointmentService, AppointmentService>();
 builder.Services.AddScoped<ICourseRegisterService, CourseRegisterService>();
+builder.Services.AddScoped<ICourseQuestionService, CourseQuestionService>();
 
 builder.Services.AddScoped<CourseRepository>();
 builder.Services.AddScoped<CourseCategoryRepository>();
 builder.Services.AddScoped<CourseRegisterRepository>();
+builder.Services.AddScoped<CourseQuestionRepository>();
 
 builder.Services.AddControllers();
 builder.Services.AddAutoMapper(typeof(MapperConfigurationsProfile));

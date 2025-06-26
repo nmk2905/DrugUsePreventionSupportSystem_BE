@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using DTO.Course;
 using DTO.CourseCategory;
+using DTO.CourseQuestion;
 using Microsoft.EntityFrameworkCore;
 using Repositories;
 using Repositories.DBContext;
@@ -61,8 +62,18 @@ namespace Services
 
 		public async Task<List<CourseDto>> GetAllCoursesAsync()
 		{
-			var course = await _repo.GetAllCourseAsync();
-			return course.Select(MapToDto).ToList();
+			var courses = await _repo.GetAllCourseAsync();
+
+			var courseDtos = courses.Select(course =>
+			{
+				var dto = _mapper.Map<CourseDto>(course);
+				dto.CourseQuestions = course.CourseQuestions != null
+					? course.CourseQuestions.Select(q => _mapper.Map<CourseQuestionDto>(q)).ToList()
+					: new List<CourseQuestionDto>();
+				return dto;
+			}).ToList();
+
+			return courseDtos;
 		}
 
 		public async Task<Course?> GetCourseByIdAsync(int id)
