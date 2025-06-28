@@ -178,8 +178,6 @@ public partial class Drug_use_prevention_systemContext : DbContext
 
             entity.Property(e => e.QuestionId).HasColumnName("Question_ID");
             entity.Property(e => e.AssessmentId).HasColumnName("Assessment_ID");
-            entity.Property(e => e.DisplayOrder).HasColumnName("Display_order");
-            entity.Property(e => e.IsRequired).HasColumnName("Is_required");
             entity.Property(e => e.QuestionText).HasColumnName("Question_text");
             entity.Property(e => e.QuestionType)
                 .HasMaxLength(50)

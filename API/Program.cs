@@ -28,6 +28,7 @@ builder.Services.AddScoped<IAppointmentService, AppointmentService>();
 builder.Services.AddScoped<ICourseRegisterService, CourseRegisterService>();
 builder.Services.AddScoped<ICourseQuestionService, CourseQuestionService>();
 builder.Services.AddScoped<IUserAssessmentService, UserAssessmentService>();
+builder.Services.AddScoped<IAssessmentQuestionService, AssessmentQuestionService>();
 
 builder.Services.AddScoped<CourseRepository>();
 builder.Services.AddScoped<CourseCategoryRepository>();
@@ -37,7 +38,7 @@ builder.Services.AddScoped<CourseQuestionRepository>();
 builder.Services.AddControllers();
 builder.Services.AddAutoMapper(typeof(MapperConfigurationsProfile));
 
-builder.Services.AddDbContext<a>(options =>
+builder.Services.AddDbContext<Drug_use_prevention_systemContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
