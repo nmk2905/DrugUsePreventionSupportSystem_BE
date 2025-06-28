@@ -37,7 +37,7 @@ builder.Services.AddScoped<CourseQuestionRepository>();
 builder.Services.AddControllers();
 builder.Services.AddAutoMapper(typeof(MapperConfigurationsProfile));
 
-builder.Services.AddDbContext<Drug_use_prevention_systemContext>(options =>
+builder.Services.AddDbContext<a>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 });

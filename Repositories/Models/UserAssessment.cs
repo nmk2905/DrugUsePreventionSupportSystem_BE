@@ -13,8 +13,6 @@ public partial class UserAssessment
 
     public int? UserId { get; set; }
 
-    public DateTime? StartTime { get; set; }
-
     public DateTime? CompletedTime { get; set; }
 
     public decimal? Score { get; set; }
