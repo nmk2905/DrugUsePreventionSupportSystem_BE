@@ -10,7 +10,7 @@ namespace Services
 {
     public interface IAssessmentQuestionService
     {
-        Task<List<AssessmentQuestion>> GetAssessmentQuestionsAsync();
+        Task<List<AssessmentQuestion>> GetAllAssessmentQuestion();
         Task<AssessmentQuestion> GetAssessmentQuestionById(int id);
         Task<int> AddQuestionAsync(AssessmentQuestion question);
         Task<int> UpdateQuestionAsync(AssessmentQuestion question);
@@ -45,9 +45,9 @@ namespace Services
             return _repository.GetAssessmentQuestionById(id);
         }
 
-        public Task<List<AssessmentQuestion>> GetAssessmentQuestionsAsync()
+        public Task<List<AssessmentQuestion>> GetAllAssessmentQuestion()
         {
-            return _repository.GetAllAsync();
+            return _repository.GetAllAssessmentQuestion();
         }
 
         public Task<int> UpdateQuestionAsync(AssessmentQuestion question)

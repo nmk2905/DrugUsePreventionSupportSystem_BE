@@ -13,13 +13,13 @@ namespace Repositories
     {
         public AssessmentQuestionRepository() { }
 
-        public async Task<List<AssessmentQuestion>> GetAllAssessmentQuestionAsync()
+        public async Task<List<AssessmentQuestion>> GetAllAssessmentQuestion()
         {
-            return _context.AssessmentQuestions.Include(b => b.AssessmentId).ToList();
+            return await _context.AssessmentQuestions.Include(b => b.Assessment).ToListAsync();
         }
         public async Task<AssessmentQuestion> GetAssessmentQuestionById(int id)
         {
-            return await _context.AssessmentQuestions.Include(b => b.AssessmentId).FirstOrDefaultAsync(i => i.QuestionId == id);
+            return await _context.AssessmentQuestions.Include(b => b.Assessment).FirstOrDefaultAsync(i => i.QuestionId == id);
         }
     }
 }
