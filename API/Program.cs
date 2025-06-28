@@ -27,6 +27,7 @@ builder.Services.AddScoped<IConsultantService, ConsultantService>();
 builder.Services.AddScoped<IAppointmentService, AppointmentService>();
 builder.Services.AddScoped<ICourseRegisterService, CourseRegisterService>();
 builder.Services.AddScoped<ICourseQuestionService, CourseQuestionService>();
+builder.Services.AddScoped<IUserAssessmentService, UserAssessmentService>();
 
 builder.Services.AddScoped<CourseRepository>();
 builder.Services.AddScoped<CourseCategoryRepository>();
