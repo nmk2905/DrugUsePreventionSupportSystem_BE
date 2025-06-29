@@ -156,13 +156,10 @@ public partial class Drug_use_prevention_systemContext : DbContext
             entity.ToTable("Assessment_options");
 
             entity.Property(e => e.OptionId).HasColumnName("Option_ID");
-            entity.Property(e => e.DisplayOrder).HasColumnName("Display_order");
             entity.Property(e => e.OptionText)
                 .HasMaxLength(200)
                 .HasColumnName("Option_text");
-            entity.Property(e => e.OptionValue)
-                .HasMaxLength(100)
-                .HasColumnName("Option_value");
+            entity.Property(e => e.OptionValue).HasColumnName("Option_value");
             entity.Property(e => e.QuestionId).HasColumnName("Question_ID");
 
             entity.HasOne(d => d.Question).WithMany(p => p.AssessmentOptions)

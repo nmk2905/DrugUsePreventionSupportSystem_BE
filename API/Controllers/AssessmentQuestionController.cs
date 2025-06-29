@@ -76,7 +76,7 @@ namespace API.Controllers
 
         // PUT: api/AssessmentQuestion/Update/5
         [HttpPut("Update/{id}")]
-        public async Task<IActionResult> Update(int id, [FromBody] CreateQuestionDto dto)
+        public async Task<IActionResult> Update(int id, [FromBody] UpdateQuestionDto dto)
         {
             var existing = await _service.GetAssessmentQuestionById(id);
             if (existing == null)
@@ -129,6 +129,13 @@ namespace API.Controllers
             public int? AssessmentId { get; set; }
             public string QuestionText { get; set; }
             public string QuestionType { get; set; }
+        }
+
+        public class UpdateQuestionDto
+        {
+            public int? AssessmentId { get; set; }
+            public string? QuestionText { get; set; }
+            public string? QuestionType { get; set; }
         }
     }
 }
