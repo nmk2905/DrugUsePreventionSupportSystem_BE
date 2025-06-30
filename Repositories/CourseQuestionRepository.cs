@@ -13,7 +13,8 @@ namespace Repositories
 	{
 		public async Task<List<CourseQuestion>> GetAllAsync()
 		{
-			return await _context.CourseQuestions.ToListAsync();
+			return await _context.CourseQuestions.Include(q => q.CourseQuestionOptions)
+												 .ToListAsync();
 		}
 
 		public async Task<CourseQuestion> CreateAsync(CourseQuestion question)

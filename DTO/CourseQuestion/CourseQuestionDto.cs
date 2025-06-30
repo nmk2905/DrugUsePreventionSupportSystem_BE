@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DTO.CourseQuestion.CourseOptions;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -17,5 +18,7 @@ namespace DTO.CourseQuestion
 		public int DisplayOrder { get; set; }
 
 		public bool? IsRequired { get; set; }
+
+		public virtual ICollection<CourseQuestionOptionDto> CourseQuestionOptions { get; set; } = new List<CourseQuestionOptionDto>();
 	}
 }

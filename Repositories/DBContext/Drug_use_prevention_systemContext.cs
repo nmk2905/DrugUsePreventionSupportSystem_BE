@@ -76,9 +76,9 @@ public partial class Drug_use_prevention_systemContext : DbContext
 	}
 	protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 	=> optionsBuilder.UseSqlServer(GetConnectionString("DefaultConnection"));
-    //
+	//
 
-	protected override void OnModelCreating(ModelBuilder modelBuilder)
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<AgeGroup>(entity =>
         {
@@ -390,10 +390,7 @@ public partial class Drug_use_prevention_systemContext : DbContext
                 .IsRequired()
                 .HasMaxLength(200)
                 .HasColumnName("Option_text");
-            entity.Property(e => e.OptionValue)
-                .IsRequired()
-                .HasMaxLength(100)
-                .HasColumnName("Option_value");
+            entity.Property(e => e.OptionValue).HasColumnName("Option_value");
             entity.Property(e => e.QuestionId).HasColumnName("Question_ID");
 
             entity.HasOne(d => d.Question).WithMany(p => p.CourseQuestionOptions)

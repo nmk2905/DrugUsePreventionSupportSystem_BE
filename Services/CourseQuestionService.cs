@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using DTO.CourseQuestion;
+using DTO.CourseQuestion.CourseOptions;
 using Repositories;
 using Repositories.DBContext;
 using Repositories.Models;
@@ -52,8 +53,16 @@ namespace Services
 
 		public async Task<List<CourseQuestionDto>> GetAllAsync()
 		{
-			var question = await _repo.GetAllAsync();
-			return _mapper.Map<List<CourseQuestionDto>>(question);
+			var questions = await _repo.GetAllAsync();
+			var questionDtos = questions.Select(question =>
+			{
+				var dtos = _mapper.Map<CourseQuestionDto>(question);
+				dtos.CourseQuestionOptions = question.CourseQuestionOptions != null
+					? question.CourseQuestionOptions.Select(o => _mapper.Map<CourseQuestionOptionDto>(o)).ToList()
+					: new List<CourseQuestionOptionDto>();
+				return dtos;
+			}).ToList();
+			return questionDtos;
 		}
 
 		public async Task<CourseQuestion?> UpdateAsync(int id, UpdateCourseQuestionRequestDto questionDto)
