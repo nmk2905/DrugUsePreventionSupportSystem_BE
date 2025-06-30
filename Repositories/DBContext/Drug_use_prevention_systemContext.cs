@@ -63,20 +63,22 @@ public partial class Drug_use_prevention_systemContext : DbContext
 
     public virtual DbSet<UserRole> UserRoles { get; set; }
 
-    //Khi mà sửa database thì phải thêm dòng này vào file context mới
-    public static string GetConnectionString(string connectionStringName)
-    {
-        var config = new ConfigurationBuilder()
-            .SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
-            .AddJsonFile("appsettings.json")
-            .Build();
 
-        string connectionString = config.GetConnectionString(connectionStringName);
-        return connectionString;
-    }
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-    => optionsBuilder.UseSqlServer(GetConnectionString("DefaultConnection"));
-    //
+	//Khi mà sửa database thì phải thêm dòng này vào file context mới
+	public static string GetConnectionString(string connectionStringName)
+	{
+		var config = new ConfigurationBuilder()
+			.SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
+			.AddJsonFile("appsettings.json")
+			.Build();
+
+		string connectionString = config.GetConnectionString(connectionStringName);
+		return connectionString;
+	}
+	protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+	=> optionsBuilder.UseSqlServer(GetConnectionString("DefaultConnection"));
+	//
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<AgeGroup>(entity =>
@@ -384,10 +386,7 @@ public partial class Drug_use_prevention_systemContext : DbContext
                 .IsRequired()
                 .HasMaxLength(200)
                 .HasColumnName("Option_text");
-            entity.Property(e => e.OptionValue)
-                .IsRequired()
-                .HasMaxLength(100)
-                .HasColumnName("Option_value");
+            entity.Property(e => e.OptionValue).HasColumnName("Option_value");
             entity.Property(e => e.QuestionId).HasColumnName("Question_ID");
 
             entity.HasOne(d => d.Question).WithMany(p => p.CourseQuestionOptions)

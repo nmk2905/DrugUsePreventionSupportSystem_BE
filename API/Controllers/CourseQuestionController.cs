@@ -24,12 +24,12 @@ namespace API.Controllers
 			return Ok(questions);
 		}
 
-		[HttpPost("{id}")]
-		public async Task<IActionResult> Create([FromRoute] int id, [FromBody] CreateQuestionRequestDto questionDto)
+		[HttpPost("{courseId}")]
+		public async Task<IActionResult> Create([FromRoute] int courseId, [FromBody] CreateQuestionRequestDto questionDto)
 		{
 			try
 			{
-				var createdQuestion = await _service.CreateAsync(id, questionDto);
+				var createdQuestion = await _service.CreateAsync(courseId, questionDto);
 				return Ok(createdQuestion);
 			}
 			catch (Exception ex)

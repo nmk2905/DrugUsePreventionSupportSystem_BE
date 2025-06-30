@@ -13,7 +13,7 @@ public partial class CourseQuestionOption
 
     public string OptionText { get; set; }
 
-    public string OptionValue { get; set; }
+    public int? OptionValue { get; set; }
 
     public int DisplayOrder { get; set; }
 
