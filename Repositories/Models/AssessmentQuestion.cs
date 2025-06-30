@@ -15,10 +15,6 @@ public partial class AssessmentQuestion
 
     public string QuestionType { get; set; }
 
-    public int? DisplayOrder { get; set; }
-
-    public bool? IsRequired { get; set; }
-
     public virtual Assessment Assessment { get; set; }
 
     public virtual ICollection<AssessmentOption> AssessmentOptions { get; set; } = new List<AssessmentOption>();
