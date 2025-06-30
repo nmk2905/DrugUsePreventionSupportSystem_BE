@@ -31,6 +31,8 @@ builder.Services.AddScoped<IUserAssessmentService, UserAssessmentService>();
 builder.Services.AddScoped<IAssessmentQuestionService, AssessmentQuestionService>();
 builder.Services.AddScoped<IAssessmentOptionService, AssessmentOptionService>();
 builder.Services.AddScoped<IAgeGroupService, AgeGroupService>();
+builder.Services.AddScoped<IRiskLevelService, RiskLevelService>();
+builder.Services.AddScoped<IAssessmentService, AssessmentService>();
 
 builder.Services.AddScoped<CourseRepository>();
 builder.Services.AddScoped<CourseCategoryRepository>();
