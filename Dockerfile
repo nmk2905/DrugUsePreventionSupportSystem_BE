@@ -24,8 +24,11 @@ FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS runtime
 WORKDIR /app
 COPY --from=build /app/publish .
 
-# Expose port if needed
+# Expose port
 EXPOSE 80
+
+# Set environment variable for ASP.NET Core
+ENV ASPNETCORE_URLS=http://+:80
 
 # Start the app
 ENTRYPOINT ["dotnet", "API.dll"]

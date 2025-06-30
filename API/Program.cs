@@ -123,23 +123,23 @@ builder.Services.AddSwaggerGen(option =>
 //Listener gate 80 for the container
 //builder.WebHost.ConfigureKestrel(serverOptions =>
 //{
-//	serverOptions.ListenAnyIP(80);
+//    serverOptions.ListenAnyIP(80);
 //});
 
 var app = builder.Build();
 
-// Always enable Swagger (for Docker container)
+//Always enable Swagger (for Docker container)
 //app.UseSwagger();
 //app.UseSwaggerUI(c =>
 //{
-//	c.SwaggerEndpoint("/swagger/v1/swagger.json", "API v1");
+//    c.SwaggerEndpoint("/swagger/v1/swagger.json", "API v1");
 //});
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-	app.UseSwagger();
-	app.UseSwaggerUI();
+    app.UseSwagger();
+    app.UseSwaggerUI();
 }
 
 //CORS
