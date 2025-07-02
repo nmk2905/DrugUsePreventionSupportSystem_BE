@@ -18,6 +18,7 @@ namespace API.Controllers
             _service = service;
         }
 
+        //lấy toàn bộ RiskLevel
         [HttpGet]
         [ProducesResponseType(typeof(List<RiskLevelSampleDto>), StatusCodes.Status200OK)]
         public async Task<ActionResult<List<RiskLevel>>> GetAll()
@@ -32,6 +33,7 @@ namespace API.Controllers
             return Ok(result);
         }
 
+        //lấy 1 RiskLevel theo id
         [HttpGet("{id}")]
         [ProducesResponseType(typeof(List<RiskLevelSampleDto>), StatusCodes.Status200OK)]
         public async Task<ActionResult<RiskLevel>> GetById(int id)
@@ -49,6 +51,7 @@ namespace API.Controllers
             return Ok(result);
         }
 
+        //tạo RiskLevel
         [HttpPost]
         public async Task<ActionResult> Create([FromBody] RiskLevelDto dto)
         {
@@ -62,6 +65,7 @@ namespace API.Controllers
             return Ok(new { message = "Thêm thành công", riskId = id });
         }
 
+        //update RiskLevel
         [HttpPut("{id}")]
         public async Task<ActionResult> Update(int id, [FromBody] RiskLevelDto dto)
         {
@@ -79,6 +83,7 @@ namespace API.Controllers
             return Ok(new { message = "Cập nhật thành công" });
         }
 
+        //xóa
         [HttpDelete("Delete/{id}")]
         public async Task<IActionResult> Delete(int id)
         {

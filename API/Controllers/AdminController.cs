@@ -19,6 +19,7 @@ namespace API.Controllers
             _userService = userService;
         }
 
+        //lấy tất cả người dùng các role
         [HttpGet("GetAllUser")]
         [Authorize(Roles = "1")]
         public async Task<IActionResult> GetAllUsers()
@@ -40,7 +41,7 @@ namespace API.Controllers
             return Ok(userDTOs);
         }
 
-
+        //lấy các blog chờ được duyệt (các blog ở status pending")
         [HttpGet("All-blogs-for-admin")]
         [Authorize(Roles = "1")]
         public async Task<IActionResult> GetPendingBlogs()

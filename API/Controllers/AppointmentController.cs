@@ -19,7 +19,7 @@ namespace API.Controllers
         }
 
         [HttpPost("Book")]
-        [Authorize(Roles = "3")] // user
+        [Authorize(Roles = "3")] // user book lịch 1 cons chỉ định
         public async Task<IActionResult> Book([FromBody] BookAppointmentRequest request)
         {
             var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
@@ -47,7 +47,7 @@ namespace API.Controllers
             }
         }
 
-
+        //xem các lịch đã được book của customer và cons
         [HttpGet("MyAppointments")]
         [Authorize(Roles = "2,3")]
         public async Task<IActionResult> MyAppointments()
@@ -69,9 +69,9 @@ namespace API.Controllers
             return Ok(result);
         }
 
-
+        
         [HttpDelete("{id}")]
-        [Authorize(Roles = "3")] // User
+        [Authorize(Roles = "3")] // User hủy lịch, chỉ áp dụng với lịch ở status là pending
         public async Task<IActionResult> Cancel(int id)
         {
             var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
@@ -82,7 +82,7 @@ namespace API.Controllers
 
 
         [HttpPut("Approve-appointment")]
-        [Authorize(Roles = "1")] // Admin duyệt
+        [Authorize(Roles = "1")] // Admin duyệt appointment
         public async Task<IActionResult> ApproveAppointment([FromBody] ApproveAppointmentRequest request)
         {
             var success = await _appointmentService.UpdateStatusAsync(request.AppointmentId, AppointmentStatus.Confirmed, request.MeetingLink);

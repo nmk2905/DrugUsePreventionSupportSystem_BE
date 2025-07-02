@@ -18,6 +18,7 @@ namespace API.Controllers
             _service = AssessmentQuestionService;
         }
 
+        //lấy toàn bộ câu hỏi
         [HttpGet("GetAll")]
         public async Task<IActionResult> GetAll()
         {
@@ -33,7 +34,7 @@ namespace API.Controllers
             return Ok(result);
         }
 
-        // GET: api/AssessmentQuestion/5
+        // lấy câu hỏi chỉ định
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
         {
@@ -51,7 +52,7 @@ namespace API.Controllers
             return Ok(result);
         }
 
-        // POST: api/AssessmentQuestion/Add
+        // thêm câu hỏi
         [HttpPost("Add")]
         public async Task<IActionResult> Add([FromBody] CreateQuestionDto dto)
         {
@@ -74,7 +75,7 @@ namespace API.Controllers
         }
 
 
-        // PUT: api/AssessmentQuestion/Update/5
+        // update câu hỏi
         [HttpPut("Update/{id}")]
         public async Task<IActionResult> Update(int id, [FromBody] UpdateQuestionDto dto)
         {
@@ -104,7 +105,7 @@ namespace API.Controllers
 
 
 
-        // DELETE: api/AssessmentQuestion/Delete/5
+        // xóa câu hoit
         [HttpDelete("Delete/{id}")]
         public async Task<IActionResult> Delete(int id)
         {

@@ -19,7 +19,7 @@ namespace API.Controllers
         }
 
         [HttpGet("AvailableSlots")]
-        [Authorize(Roles = "3")] // user
+        [Authorize(Roles = "3")] // user xem được các slot trống của 1 consultant
         public async Task<IActionResult> GetAvailableSlots(
             [FromQuery] int consultantId,
             [FromQuery] string from,
@@ -70,7 +70,7 @@ namespace API.Controllers
         }
 
 
-
+        //consultant đăng kí slot làm việc
         [HttpPost("CreateSlot")]
         [Authorize(Roles = "2")]
         public async Task<IActionResult> CreateSlot([FromBody] CreateSlotRequest request)

@@ -18,7 +18,7 @@ namespace API.Controllers
         }
 
         [HttpGet("All-Consultants")]
-        [Authorize(Roles = "1")] // Admin
+        [Authorize(Roles = "1")] // Admin lấy toàn bộ cons
         public async Task<IActionResult> GetAllConsultants()
         {
             var consultants = await _consultantService.GetAllConsultant();
@@ -40,7 +40,7 @@ namespace API.Controllers
 
 
         [HttpGet("{id}")]
-        [Authorize(Roles = "1,2")] // Admin, Cons
+        [Authorize(Roles = "1")] // Admin lấy data 1 cons
         public async Task<IActionResult> GetConsultantById(int id)
         {
             var c = await _consultantService.GetConsultantById(id);
@@ -62,7 +62,7 @@ namespace API.Controllers
         }
 
 
-
+        //cons update profile
         [HttpPut("Update-profile")]
         [Authorize(Roles = "2")] 
         public async Task<IActionResult> UpdateProfile([FromBody] UpdateConsultantRequest request)

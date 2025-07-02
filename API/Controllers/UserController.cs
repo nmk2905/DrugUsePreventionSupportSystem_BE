@@ -23,6 +23,8 @@ namespace API.Controllers
             _userService = userService;
         }
 
+
+        //login
         [HttpPost("Login")]
         public async Task<IActionResult> Login([FromBody] LoginRequest request)
         {
@@ -58,14 +60,15 @@ namespace API.Controllers
         }
 
 
-        [HttpGet("GetAllUser")]
-        [Authorize(Roles = "1")]
-        public async Task<IActionResult> GetAllUsers()
-        {
-            var users = await _userService.GetAllUsersAsync();
-            return Ok(users);
-        }
+        //[HttpGet("GetAllUser")]
+        //[Authorize(Roles = "1")]
+        //public async Task<IActionResult> GetAllUsers()
+        //{
+        //    var users = await _userService.GetAllUsersAsync();
+        //    return Ok(users);
+        //}
 
+        //lấy data người dùng bằng email
         [HttpGet("GetUserByEmail")]
         public async Task<IActionResult> GetByEmail([FromQuery] string email)
         {
@@ -76,6 +79,7 @@ namespace API.Controllers
             return user == null ? NotFound() : Ok(user);
         }
 
+        //lấy data theo id
         [HttpGet("GetUserById/{id}")]
         public async Task<IActionResult> GetById(int id)
         {
@@ -83,6 +87,7 @@ namespace API.Controllers
             return user == null ? NotFound() : Ok(user);
         }
 
+        //kiểm tra mail có tồn tại
         [HttpGet("CheckEmailExist")]
         public async Task<IActionResult> CheckEmailExist([FromQuery] string email)
         {
@@ -93,6 +98,7 @@ namespace API.Controllers
             return Ok(new { exists });
         }
 
+        //đăng kí, thành công sẽ tạo role user
         [HttpPost("Register")]
         public async Task<IActionResult> Register([FromBody] RegisterRequest request)
         {
@@ -118,27 +124,23 @@ namespace API.Controllers
             }
         }
 
-
+        //update profile
         [HttpPut("Update-Profile")]
         [Authorize(Roles ="1,2,3,4")]
         public async Task<IActionResult> UpdateProfile([FromBody] UpdateProfileRequest request)
         {
             try
             {
-                // 1) Lấy UserId từ token
                 var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
 
-                // 2) Lấy user hiện có từ DB
                 var user = await _userService.GetUserById(userId);
                 if (user == null) return NotFound();
 
-                // 3) Chỉ update các trường cho phép
                 user.FullName = request.FullName;
                 user.Email = request.Email;
                 user.Address = request.Address;
                 user.DateOfBirth = request.DateOfBirth;
 
-                // 4) Gọi Service update
                 var result = await _userService.UpdateProfileAsync(user);
 
                 return Ok(result);
@@ -149,7 +151,7 @@ namespace API.Controllers
             }
         }
 
-
+        //resetpassword
         [HttpPost("Forgot-Password")]
         [Authorize(Roles = "1,2,3,4")]
         public async Task<IActionResult> ForgotPassword([FromBody] ForgotPasswordRequest request)

@@ -20,7 +20,7 @@ namespace API.Controllers
             _blogService = blogService;
         }
 
-        //Get all
+        //lấy a toàn bộ blog được duyệt (status = approved)
         [HttpGet("Get-All-Approved")]
         public async Task<List<BlogDTO>> GetAllApproved()
         {
@@ -40,7 +40,7 @@ namespace API.Controllers
         }
 
 
-
+        //show all blog của user
         [HttpGet("My-Blogs")]
         [Authorize(Roles = "3")]
         public async Task<IActionResult> GetMyBlogs()
@@ -67,7 +67,7 @@ namespace API.Controllers
 
 
 
-
+        //lấy data 1 blog
         [HttpGet("GetById/{id}")]
         [Authorize(Roles = "1,3")]
         public async Task<ActionResult<BlogDTO>> GetById(int id)
@@ -93,7 +93,7 @@ namespace API.Controllers
         }
 
 
-
+        // đăng blog
         [HttpPost("Post-blog")]
         [Authorize(Roles = "3")]
         public async Task<IActionResult> Post([FromBody] PostBlogRequest request)
@@ -128,24 +128,19 @@ namespace API.Controllers
         {
             var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
 
-            // 1) Load blog từ DB
             var blog = await _blogService.GetById(id);
             if (blog == null)
                 return NotFound();
 
-            // 2) Kiểm tra bài này có phải của user không?
             if (blog.AuthorId != userId)
                 return Forbid();
 
-            // 3) Chỉ cho phép update khi còn Pending
             if (blog.Status != "Pending")
                 return BadRequest("Cannot update an approved or rejected blog.");
 
-            // 4) Chỉ update các trường được phép
             blog.Title = request.Title;
             blog.Content = request.Content;
 
-            // 5) Gọi service update
             await _blogService.Update(blog);
 
             return Ok("Updated successfully");

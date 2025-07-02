@@ -8,7 +8,7 @@ namespace API.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    [Authorize(Roles = "1")]
+    [Authorize(Roles = "1")] //phân quyền admin
     public class AgeGroupController : Controller
     {
         private readonly IAgeGroupService _service;
@@ -18,6 +18,8 @@ namespace API.Controllers
             _service = ageGroupService;
         }
 
+
+        //lấy toàn bộ age group
         [HttpGet]
         public async Task<ActionResult<List<AgeGroup>>> GetAll()
         {
@@ -33,6 +35,7 @@ namespace API.Controllers
             return Ok(result);
         }
 
+        //lấy data 1 agegr chỉ định
         [HttpGet("{id}")]
         public async Task<ActionResult<AgeGroup>> GetById(int id)
         {
@@ -51,6 +54,8 @@ namespace API.Controllers
             return Ok(result);
         }
 
+
+        //tạo agegroup mới
         [HttpPost]
         public async Task<ActionResult> Create([FromBody] AgeGroupDto dto)
         {
@@ -72,7 +77,7 @@ namespace API.Controllers
             return Ok(new { message = "Thêm thành công", groupId = id });
         }
 
-
+        //update agegroup
         [HttpPut("{id}")]
         public async Task<ActionResult> Update(int id, [FromBody] AgeGroupDto age)
         {
@@ -100,7 +105,7 @@ namespace API.Controllers
         }
 
 
-
+        //xóa 1 agegroup
         [HttpDelete("Delete/{id}")]
         public async Task<IActionResult> Delete(int id)
         {

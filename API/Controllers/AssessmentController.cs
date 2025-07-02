@@ -18,6 +18,7 @@ namespace API.Controllers
             _service = service;
         }
 
+        //lấy toàn bộ bài Assessment
         [HttpGet]
         public async Task<ActionResult<List<Assessment>>> GetAll()
         {
@@ -35,6 +36,8 @@ namespace API.Controllers
             return Ok(result);
         }
 
+
+        //lấy data 1 bài Assessment chỉ định
         [HttpGet("{id}")]
         public async Task<ActionResult<Assessment>> GetById(int id)
         {

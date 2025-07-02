@@ -19,6 +19,7 @@ namespace API.Controllers
             _commentService = commentService;
         }
 
+        //show all comment
         [HttpGet("GetAll")]
         public async Task<IActionResult> Get()
         {
@@ -38,7 +39,7 @@ namespace API.Controllers
             return Ok(dtoList);
         }
 
-
+        //show comment theo id
         [HttpGet("GetById/{id}")]
         public async Task<IActionResult> GetById(int id)
         {
@@ -66,7 +67,7 @@ namespace API.Controllers
         public sealed record PostCommentRequest(int BlogId, string Content);
 
 
-        //create
+        //tạo comment
         [HttpPost("Create")]
         [Authorize(Roles = "3")]
         public async Task<IActionResult> Post([FromBody] PostCommentRequest request)
@@ -96,16 +97,13 @@ namespace API.Controllers
         {
             var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
 
-            // Lấy comment từ DB
             var comment = await _commentService.GetById(id);
             if (comment == null)
                 return NotFound();
 
-            // Kiểm tra quyền sở hữu
             if (comment.UserId != userId)
                 return Forbid();
 
-            // Cập nhật Content
             comment.Content = request.Content;
 
             await _commentService.Update(comment);
@@ -132,7 +130,7 @@ namespace API.Controllers
             return Ok("Deleted successfully");
         }
 
-
+        //show all comment của user
         [HttpGet("My-Comment")]
         [Authorize(Roles = "3")]
         public async Task<IActionResult> GetMyComments()
@@ -157,7 +155,7 @@ namespace API.Controllers
         }
 
         
-
+        //show all cmt của 1 blog chỉ định
         [HttpGet("All-Comment-By-Blog/{blogId}")]
         public async Task<IActionResult> GetCommentsByBlog(int blogId)
         {

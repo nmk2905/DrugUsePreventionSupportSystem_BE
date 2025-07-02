@@ -18,6 +18,7 @@ namespace API.Controllers
             _service = assessmentOptionService;
         }
 
+        //lấy toàn bộ đáp án 
         [HttpGet("GetAll")]
         public async Task<IActionResult> GetAll()
         {
@@ -34,6 +35,7 @@ namespace API.Controllers
             return Ok(result);
         }
 
+        //lấy data 1 đáp án chỉ định
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
         {
@@ -52,6 +54,7 @@ namespace API.Controllers
             return Ok(result);
         }
 
+        //thêm 1 câu trả lời
         [HttpPost("Add")]
         public async Task<IActionResult> Add([FromBody] AddOptionDto dto)
         {
@@ -66,6 +69,7 @@ namespace API.Controllers
             return Ok(new { message = "Thêm thành công", optionId = id });
         }
 
+        //update 1 câu trả lời
         [HttpPut("Update/{id}")]
         public async Task<IActionResult> Update(int id, [FromBody] UpdateOptionDto dto)
         {
@@ -86,6 +90,7 @@ namespace API.Controllers
             return Ok(new { message = "Cập nhật thành công" });
         }
 
+        //xóa 1 câu trả lời
         [HttpDelete("Delete/{id}")]
         public async Task<IActionResult> Delete(int id)
         {
