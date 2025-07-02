@@ -1,4 +1,5 @@
 ﻿using DTO.UserAssessment;
+using Microsoft.EntityFrameworkCore;
 using Repositories;
 using Repositories.Models;
 
@@ -6,62 +7,50 @@ namespace Services
 {
     public interface IUserAssessmentService
     {
-        Task<AssessmentResultResponse> SubmitAssessmentAsync(int userId, int assessmentId, List<int> selectedOptionIds);
+        Task<UserAssessment> SubmitAssessmentAsync(int userId, int assessmentId, List<int> selectedOptionIds);
     }
-
     public class UserAssessmentService : IUserAssessmentService
     {
-        private readonly UserAssessmentRepository _repo;
+        private readonly UserAssessmentRepository _userRepo;
+        private readonly AssessmentOptionRepository _optionRepo;
+        private readonly RiskLevelRepository _riskRepo;
 
         public UserAssessmentService()
         {
-            _repo = new UserAssessmentRepository();
+            _userRepo = new UserAssessmentRepository();
+            _optionRepo = new AssessmentOptionRepository();
+            _riskRepo = new RiskLevelRepository();
         }
 
-        public async Task<AssessmentResultResponse> SubmitAssessmentAsync(int userId, int assessmentId, List<int> selectedOptionIds)
+        private int GetRiskLevelIdFromScore(decimal score)
         {
-            var totalScore = await _repo.CalculateTotalScore(selectedOptionIds);
+            if (score <= 5) return 1;
+            if (score <= 10) return 2;
+            return 3;
+        }
 
-            int riskLevelCode = totalScore switch
-            {
-                <= 5 => 1, // Low
-                <= 10 => 2, // Medium
-                _ => 3      // High
-            };
+        public async Task<UserAssessment> SubmitAssessmentAsync(int userId, int assessmentId, List<int> selectedOptionIds)
+        {
+            var totalScore = await _optionRepo.CalculateTotalScore(selectedOptionIds);
+            var riskLevelId = GetRiskLevelIdFromScore(totalScore);
 
-            string riskLevelName = riskLevelCode switch
-            {
-                1 => "Low",
-                2 => "Medium",
-                3 => "High",
-                _ => "Unknown"
-            };
-
-            string recommendation = riskLevelCode switch
-            {
-                1 => "Bạn nên tham gia khóa học online.",
-                2 or 3 => "Bạn nên đặt lịch tư vấn với chuyên gia.",
-                _ => "Không có gợi ý phù hợp."
-            };
-
-            var ua = new UserAssessment
+            var result = new UserAssessment
             {
                 UserId = userId,
                 AssessmentId = assessmentId,
-                CompletedTime = DateTime.UtcNow,
                 Score = totalScore,
-                RiskLevel = riskLevelCode 
+                RiskLevel = riskLevelId,
+                CompletedTime = DateTime.UtcNow
             };
 
-            await _repo.CreateAsync(ua);
+            await _userRepo.CreateAsync(result);
+            await _userRepo.SaveAsync();
 
-            return new AssessmentResultResponse
-            {
-                TotalScore = totalScore,
-                RiskLevel = riskLevelName,
-                Recommendation = recommendation
-            };
+            result.RiskLevelNavigation = await _riskRepo.GetByIdAsync(riskLevelId);
+
+            return result;
         }
     }
+
 
 }

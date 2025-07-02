@@ -9,7 +9,7 @@ namespace API.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    //[Authorize(Roles = "1")]
+    [Authorize(Roles = "1")]
     public class AssessmentController : Controller
     {
         private readonly IAssessmentService _service;

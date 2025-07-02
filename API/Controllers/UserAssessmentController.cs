@@ -11,29 +11,39 @@ namespace API.Controllers
     [Route("api/[controller]")]
     public class UserAssessmentController : Controller
     {
-        private readonly IUserAssessmentService _userAssessmentService;
+        private readonly IUserAssessmentService _service;
         
         public UserAssessmentController(IUserAssessmentService userAssessmentService)
         {
-            _userAssessmentService = userAssessmentService;
+            _service = userAssessmentService;
         }
 
-        [HttpPost("Submit")]
-        [Authorize(Roles = "3")]
-        public async Task<IActionResult> Submit([FromBody] SubmitAssessmentRequest request)
+        [HttpPost("submit")]
+        public async Task<IActionResult> Submit([FromBody] SubmitAssessmentDto dto)
         {
-            var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            var result = await _service.SubmitAssessmentAsync(
+                dto.UserId,
+                dto.AssessmentId,
+                dto.SelectedOptionIds
+            );
 
-            try
+            return Ok(new
             {
-                var result = await _userAssessmentService.SubmitAssessmentAsync(userId, request.AssessmentId, request.SelectedOptionIds);
-                return Ok(result);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(new { message = ex.Message });
-            }
+                Score = result.Score,
+                RiskLevel = result.RiskLevelNavigation?.RiskLevel1,
+                Description = result.RiskLevelNavigation?.RiskDescription
+            });
         }
+
+
+
+        public class SubmitAssessmentDto
+        {
+            public int UserId { get; set; }
+            public int AssessmentId { get; set; }
+            public List<int> SelectedOptionIds { get; set; }
+        }
+
 
     }
 }

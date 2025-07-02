@@ -21,5 +21,12 @@ namespace Repositories
         {
             return await _context.AssessmentOptions.Include(b => b.Question).FirstOrDefaultAsync(i => i.OptionId == id);
         }
+
+        public async Task<decimal> CalculateTotalScore(List<int> optionIds)
+        {
+            return await _context.AssessmentOptions
+                .Where(o => optionIds.Contains(o.OptionId))
+                .SumAsync(o => (decimal)(o.OptionValue ?? 0));
+        }
     }
 }
