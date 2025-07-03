@@ -54,5 +54,14 @@ namespace Repositories
 		{
 			return await _context.CourseQuestions.FindAsync(id);
 		}
+
+		public async Task<List<CourseQuestion>> GetQuestionsByCourseIdAsync(int courseId)
+		{
+			return await _context.CourseQuestions
+				.Include(q => q.CourseQuestionOptions)
+				.Where(q => q.CourseId == courseId)
+				.ToListAsync();
+		}
+
 	}
 }

@@ -3,6 +3,7 @@ using DTO.Course;
 using DTO.CourseCategory;
 using DTO.CourseQuestion;
 using DTO.CourseQuestion.CourseOptions;
+using DTO.UserAnswer;
 using Repositories.Models;
 
 namespace Services.Mappers
@@ -30,6 +31,14 @@ namespace Services.Mappers
             CreateMap<CourseQuestionOption, CourseQuestionOptionDto>();
             CreateMap<CreateCourseOptionRequestDto, CourseQuestionOption>().ReverseMap();
             CreateMap<UpdateCourseOptionRequestDto, CourseQuestionOption>().ReverseMap();
+
+            CreateMap<UserAnswer, UserAnswerDto>()
+                .ForMember(dest => dest.CourseId, opt => opt.MapFrom(src => src.CourseId))
+                .ForMember(dest => dest.UserId, opt => opt.MapFrom(src => src.UserId))
+                .ForMember(dest => dest.QuestionId, opt => opt.MapFrom(src => src.QuestionId))
+                .ForMember(dest => dest.OptionId, opt => opt.MapFrom(src => src.OptionId))
+                .ForMember(dest => dest.TotalPoint, opt => opt.MapFrom(src => src.TotalPoint));
+            CreateMap<SubmitAnswerRequestDto, UserAnswer>().ReverseMap();
 
 		}
 

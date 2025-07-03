@@ -35,6 +35,7 @@ namespace Repositories
 		{
 			return await _context.Courses.Include(c => c.CategoryNavigation)
 										 .Include(c => c.CourseQuestions)
+										 .ThenInclude(cq => cq.CourseQuestionOptions)
 										 .ToListAsync();
 		}
 

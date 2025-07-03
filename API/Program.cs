@@ -28,6 +28,7 @@ builder.Services.AddScoped<IAppointmentService, AppointmentService>();
 builder.Services.AddScoped<ICourseRegisterService, CourseRegisterService>();
 builder.Services.AddScoped<ICourseQuestionService, CourseQuestionService>();
 builder.Services.AddScoped<ICourseQuestionOptionService, CourseQuestionOptionService>();
+builder.Services.AddScoped<IUserAnswerService, UserAnswerService>();
 
 builder.Services.AddScoped<IUserAssessmentService, UserAssessmentService>();
 builder.Services.AddScoped<IAssessmentQuestionService, AssessmentQuestionService>();
@@ -42,6 +43,7 @@ builder.Services.AddScoped<CourseCategoryRepository>();
 builder.Services.AddScoped<CourseRegisterRepository>();
 builder.Services.AddScoped<CourseQuestionRepository>();
 builder.Services.AddScoped<CourseQuestionOptionRepository>();
+builder.Services.AddScoped<UserAnswerRepository>();
 
 builder.Services.AddControllers();
 builder.Services.AddAutoMapper(typeof(MapperConfigurationsProfile));
