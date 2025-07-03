@@ -63,17 +63,7 @@ namespace Services
 		public async Task<List<CourseDto>> GetAllCoursesAsync()
 		{
 			var courses = await _repo.GetAllCourseAsync();
-
-			var courseDtos = courses.Select(course =>
-			{
-				var dto = _mapper.Map<CourseDto>(course);
-				dto.CourseQuestions = course.CourseQuestions != null
-					? course.CourseQuestions.Select(q => _mapper.Map<CourseQuestionDto>(q)).ToList()
-					: new List<CourseQuestionDto>();
-				return dto;
-			}).ToList();
-
-			return courseDtos;
+			return _mapper.Map<List<CourseDto>>(courses);
 		}
 
 		public async Task<Course?> GetCourseByIdAsync(int id)
@@ -141,27 +131,6 @@ namespace Services
 		    await _repo.UpdateAsync(id, course);
 			var savedCourse = await _repo.GetByIdAsync(id);
 			return _mapper.Map<CourseDto>(savedCourse);
-		}
-
-		private CourseDto MapToDto(Course course)
-		{
-			return new CourseDto
-			{
-				CourseId = course.CourseId,
-				Title = course.Title,
-				Description = course.Description,
-				Duration = course.Duration,
-				CreatedAt = course.CreatedAt,
-				VideoUrl = course.VideoUrl,
-				DocumentContent = course.DocumentContent,
-				Category = course.CategoryNavigation != null ? new CourseCategoryDto
-				{
-					CategoryId = course.CategoryNavigation.CategoryId,
-					Name = course.CategoryNavigation.Name,
-					Description = course.CategoryNavigation.Description,
-					Age = course.CategoryNavigation.Age
-				} : null
-			};
 		}
 	}
 }

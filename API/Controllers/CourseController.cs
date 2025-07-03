@@ -31,17 +31,6 @@ namespace api.controllers
 			return Ok(courseModel);
 		}
 
-		//		[HttpGet("{id}")]
-		//		public async Task<IActionResult> GetById([FromRoute] int id)
-		//		{
-		//			var course = await _service.GetCourseByIdAsync(id);
-
-		//			if (course == null)
-		//				return NotFound();
-
-		//			return Ok(course);
-		//		}
-
 		[HttpPost]
 		public async Task<IActionResult> CreateCourse([FromBody] CreateCourseRequestDto courseRequest)
 		{

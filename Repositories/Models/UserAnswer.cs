@@ -19,6 +19,8 @@ public partial class UserAnswer
 
     public DateTime? AnswerAt { get; set; }
 
+    public int? TotalPoint { get; set; }
+
     public virtual Course Course { get; set; }
 
     public virtual CourseQuestionOption Option { get; set; }
