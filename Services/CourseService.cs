@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using DTO.Certificate;
 using DTO.Course;
 using DTO.CourseCategory;
 using DTO.CourseQuestion;
@@ -23,6 +24,7 @@ namespace Services
 		Task<Course?> DeleteCourseAsync(int id);
 		Task<Course?> GetCourseByIdAsync(int id);
 		Task<bool> RegisterCourseAsync(int userId, int courseId);
+		Task<CertificateDto> CompleteCourseAsync(int userId, int courseId);
 	}
 
 	public class CourseService : ICourseService
@@ -131,6 +133,48 @@ namespace Services
 		    await _repo.UpdateAsync(id, course);
 			var savedCourse = await _repo.GetByIdAsync(id);
 			return _mapper.Map<CourseDto>(savedCourse);
+		}
+
+		public async Task<CertificateDto> CompleteCourseAsync(int userId, int courseId)
+		{
+			// Validate user and course registration
+			var isRegistered = _context.CourseRegisters.Any(cr => cr.UserId == userId && cr.CourseId == courseId);
+			if (!isRegistered)
+				throw new Exception("User is not registered for this course");
+
+			// Check if course exists
+			var course = await _repo.GetByIdAsync(courseId);
+			if (course == null)
+				throw new Exception("Course not found");
+
+			// Check if user exists
+			var user = await _context.Users.FindAsync(userId);
+			if (user == null)
+				throw new Exception("User not found");
+
+			//Check if user has already completed the course
+			var existingCertificate = await _context.Certifications
+				.FirstOrDefaultAsync(c => c.UserId == userId && c.CourseId == courseId);
+			if (existingCertificate != null)
+				throw new Exception("User has already completed this course");
+
+			var certificateCode = Guid.NewGuid().ToString("N").Substring(0, 12).ToUpper();
+
+			var certificate = new Certification
+			{
+				UserId = userId,
+				CourseId = courseId,
+				Name = $"{user.FullName} - {course.Title} Certificate",
+				CertificationCode = certificateCode,
+				CertificationUrl = $"https://example.com/certificates/{certificateCode}.pdf",
+				AchievedDate = DateOnly.FromDateTime(DateTime.UtcNow)
+			};
+
+			_context.Certifications.Add(certificate);
+			await _context.SaveChangesAsync();
+
+			return _mapper.Map<CertificateDto>(certificate);
+
 		}
 	}
 }

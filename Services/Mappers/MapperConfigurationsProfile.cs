@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using DTO.Certificate;
 using DTO.Course;
 using DTO.CourseCategory;
 using DTO.CourseQuestion;
@@ -39,6 +40,11 @@ namespace Services.Mappers
                 .ForMember(dest => dest.OptionId, opt => opt.MapFrom(src => src.OptionId))
                 .ForMember(dest => dest.TotalPoint, opt => opt.MapFrom(src => src.TotalPoint));
             CreateMap<SubmitAnswerRequestDto, UserAnswer>().ReverseMap();
+
+			CreateMap<Certification, CertificateDto>()
+				.ForMember(dest => dest.CourseId, opt => opt.MapFrom(src => src.CourseId))
+				.ForMember(dest => dest.UserId, opt => opt.MapFrom(src => src.UserId))
+				.ForMember(dest => dest.CertificationUrl, opt => opt.MapFrom(src => src.CertificationUrl));
 
 		}
 

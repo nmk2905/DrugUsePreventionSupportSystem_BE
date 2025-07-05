@@ -79,5 +79,20 @@ namespace api.controllers
 				return BadRequest(new { error = ex.Message });
 			}
 		}
+
+		[HttpPost("Complete/{courseId}")]
+		public async Task<IActionResult> CompleteCourse([FromRoute] int courseId)
+		{
+			try
+			{
+				var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+				var certificate = await _service.CompleteCourseAsync(userId, courseId);
+				return Ok(certificate);
+			}
+			catch (Exception ex)
+			{
+				return BadRequest(new { error = ex.Message });
+			}
+		}
 	}
 }
