@@ -153,7 +153,6 @@ namespace API.Controllers
 
         //resetpassword
         [HttpPost("Forgot-Password")]
-        [Authorize(Roles = "1,2,3,4")]
         public async Task<IActionResult> ForgotPassword([FromBody] ForgotPasswordRequest request)
         {
             if (string.IsNullOrWhiteSpace(request.Email) || string.IsNullOrWhiteSpace(request.NewPassword))
