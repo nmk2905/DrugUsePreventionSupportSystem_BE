@@ -30,7 +30,7 @@ namespace Repositories
 
         public async Task<User> GetUserById(int id)
         {
-            return await _context.Users.FirstOrDefaultAsync(i => i.UserId == id);
+            return await _context.Users.Include(e => e.Role).FirstOrDefaultAsync(i => i.UserId == id);
         }
 
         public async Task<bool> CheckEmailExist(string email)

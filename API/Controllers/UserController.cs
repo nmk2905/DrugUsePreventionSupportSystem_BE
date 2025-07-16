@@ -166,6 +166,48 @@ namespace API.Controllers
         }
 
 
+        [HttpGet("MyProfile")]
+        public async Task<IActionResult> MyProfile()
+        {
+            try
+            {
+                var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+
+                var user = await _userService.GetUserById(userId);
+                if (user == null)
+                    return NotFound("User not found.");
+
+                var dto = new UserDTO
+                {
+                    FullName = user.FullName,
+                    Address = user.Address,
+                    Email = user.Email,
+                    DateOfBirth = user.DateOfBirth,
+                    CreatedDate = user.CreatedDate
+                    //RoleName = user.Role?.RoleName
+                };
+
+                return Ok(dto);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
+
+
+        public class UserDTO
+        {
+            public string FullName { get; set; }
+            public string Address { get; set; }
+            public string Email { get; set; }
+            public DateOnly DateOfBirth { get; set; }
+            public DateTime? CreatedDate { get; set; }
+            //public string RoleName { get; set; }
+        }
+
+
         public sealed record LoginRequest(string Email, string Password);
 
         public sealed record UpdateProfileRequest(string Email, string FullName, string Address, DateOnly DateOfBirth);
