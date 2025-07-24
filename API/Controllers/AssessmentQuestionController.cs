@@ -71,7 +71,7 @@ namespace API.Controllers
             };
 
             var id = await _service.AddQuestionAsync(question);
-            return Ok(new { message = "Thêm thành công", questionId = id });
+            return Ok(new { message = "Thêm thành công" });
         }
 
 

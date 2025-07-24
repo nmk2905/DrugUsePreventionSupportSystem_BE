@@ -66,7 +66,7 @@ namespace API.Controllers
             };
 
             var id = await _service.AddOptionAsync(option);
-            return Ok(new { message = "Thêm thành công", optionId = id });
+            return Ok(new { message = "Thêm thành công" });
         }
 
         //update 1 câu trả lời

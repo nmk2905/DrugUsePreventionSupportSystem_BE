@@ -92,6 +92,37 @@ namespace API.Controllers
             return Ok("Rejected");
         }
 
+        //[HttpPut("UpdateRole")]
+        //public async Task<IActionResult> UpdateRole([FromBody] UpdateRoleDTO request)
+        //{
+        //    try
+        //    {
+        //        var user = await _userService.GetUserById(request.UserId);
+        //        if (user == null)
+        //            return NotFound(new { message = "User not found." });
+
+        //        // Cập nhật RoleId
+        //        user.RoleId = request.RoleId;
+
+        //        var result = await _userService.UpdateProfileAsync(user); // hoặc tạo phương thức riêng nếu cần
+
+        //        return Ok(new { message = "Role updated successfully." });
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return BadRequest(new { message = ex.Message });
+        //    }
+        //}
+
+
+        //public class UpdateRoleDTO
+        //{
+        //    public int UserId { get; set; }
+        //    public int RoleId { get; set; }
+        //    public string RoleName { get; set; }
+        //}
+
+
         public class UserDTO
         {
             public int UserId { get; set; }
