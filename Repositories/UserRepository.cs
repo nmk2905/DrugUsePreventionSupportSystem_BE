@@ -20,12 +20,12 @@ namespace Repositories
 
         public async Task<List<User>> GetAllUsersAsync()
         {
-            return _context.Users.ToList();
+            return _context.Users.Include(e => e.Role).ToList();
         }
 
         public async Task<User> GetUserByEmail(string email)
         {
-            return await _context.Users.FirstOrDefaultAsync(e => e.Email.ToLower() == email.ToLower());
+            return await _context.Users.Include(e => e.Role).FirstOrDefaultAsync(e => e.Email.ToLower() == email.ToLower());
         }
 
         public async Task<User> GetUserById(int id)

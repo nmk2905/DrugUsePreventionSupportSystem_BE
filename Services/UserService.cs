@@ -42,7 +42,7 @@ namespace Services
 
         public async Task<User> GetUserById(int id)
         {
-            return await _repo.GetByIdAsync(id);
+            return await _repo.GetUserById(id);
         }
 
         public async Task<bool> CheckEmailExist(string email)

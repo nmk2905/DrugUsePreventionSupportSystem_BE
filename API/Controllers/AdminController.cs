@@ -35,7 +35,7 @@ namespace API.Controllers
                 DateOfBirth = u.DateOfBirth,
                 Password = u.Password,
                 CreatedDate = u.CreatedDate,
-                RoleId = u.RoleId
+                RoleName = u.Role?.RoleName
             }).ToList();
 
             return Ok(userDTOs);
@@ -101,7 +101,7 @@ namespace API.Controllers
             public DateOnly DateOfBirth { get; set; }
             public string Password { get; set; }
             public DateTime? CreatedDate { get; set; }
-            public int? RoleId { get; set; }
+            public string RoleName { get; set; }
         }
 
         public class BlogDTO

@@ -76,16 +76,44 @@ namespace API.Controllers
                 return BadRequest("Email is required.");
 
             var user = await _userService.GetUserByEmail(email);
-            return user == null ? NotFound() : Ok(user);
+            if (user == null)
+                return NotFound();
+
+            var userDto = new UserDTO
+            {
+                UserId = user.UserId,
+                FullName = user.FullName,
+                Address = user.Address,
+                Email = user.Email,
+                DateOfBirth = user.DateOfBirth,
+                CreatedDate = user.CreatedDate,
+                RoleName = user.Role?.RoleName 
+            };
+
+            return Ok(userDto);
         }
 
-        //lấy data theo id
         [HttpGet("GetUserById/{id}")]
         public async Task<IActionResult> GetById(int id)
         {
             var user = await _userService.GetUserById(id);
-            return user == null ? NotFound() : Ok(user);
+            if (user == null)
+                return NotFound();
+
+            var userDto = new UserDTO
+            {
+                UserId = user.UserId,
+                FullName = user.FullName,
+                Address = user.Address,
+                Email = user.Email,
+                DateOfBirth = user.DateOfBirth,
+                CreatedDate = user.CreatedDate,
+                RoleName = user.Role?.RoleName
+            };
+
+            return Ok(userDto);
         }
+
 
         //kiểm tra mail có tồn tại
         [HttpGet("CheckEmailExist")]
@@ -184,8 +212,8 @@ namespace API.Controllers
                     Address = user.Address,
                     Email = user.Email,
                     DateOfBirth = user.DateOfBirth,
-                    CreatedDate = user.CreatedDate
-                    //RoleName = user.Role?.RoleName
+                    CreatedDate = user.CreatedDate,
+                    RoleName = user.Role?.RoleName
                 };
 
                 return Ok(dto);
@@ -206,7 +234,7 @@ namespace API.Controllers
             public string Email { get; set; }
             public DateOnly DateOfBirth { get; set; }
             public DateTime? CreatedDate { get; set; }
-            //public string RoleName { get; set; }
+            public string RoleName { get; set; }
         }
 
 
