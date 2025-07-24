@@ -74,7 +74,7 @@ namespace API.Controllers
             };
 
             var id = await _service.AddAgeGroupAsync(age);
-            return Ok(new { message = "Thêm thành công", groupId = id });
+            return Ok(new { message = "Thêm thành công"});
         }
 
         //update agegroup
