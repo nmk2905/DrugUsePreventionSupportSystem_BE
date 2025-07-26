@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Repositories.Base;
+using Repositories.DBContext;
 using Repositories.Models;
 using System;
 using System.Collections.Generic;
@@ -11,7 +12,9 @@ namespace Repositories
 {
     public class AssessmentRepository : GenericRepository<Assessment>
     {
-        public AssessmentRepository() { }
+        public AssessmentRepository(Drug_use_prevention_systemContext context) : base(context)
+        {
+        }
 
         public async Task<List<Assessment>> GetAllAssessment()
         {
@@ -26,6 +29,14 @@ namespace Repositories
                 .Include(a => a.AgeGroupNavigation)
                 .Include(a => a.AssessmentTypeNavigation)
                 .FirstOrDefaultAsync(a => a.AssessmentId == id);
+        }
+
+        //
+        public async Task<int> AddAssessmentAsync(Assessment assessment)
+        {
+            _context.Assessments.Add(assessment);
+            await _context.SaveChangesAsync();
+            return assessment.AssessmentId;
         }
     }
 }

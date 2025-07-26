@@ -1,6 +1,8 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using DTO.Assessment;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Repositories.Models;
 using Services;
 using static API.Controllers.AgeGroupController;
@@ -59,23 +61,6 @@ namespace API.Controllers
             return Ok(result);
         }
 
-        //add
-        [HttpPost]
-        public async Task<ActionResult> Create([FromBody] AssessmentDto dto)
-        {
-            var type = new Assessment
-            {
-                Title = dto.Title,
-                Description = dto.Description,
-                AssessmentType = dto.AssessmentType,
-                AgeGroup = dto.AgeGroup,
-                CreatedDate = dto.CreatedDate ?? DateTime.Now, 
-                IsActive = dto.IsActive ?? true 
-            };
-
-            var id = await _service.AddAssessmentAsync(type);
-            return Ok(new { message = "Thêm thành công" });
-        }
 
         //update
         [HttpPut("{id}")]
@@ -116,6 +101,81 @@ namespace API.Controllers
             return Ok(new { message = "Xóa thành công" });
         }
 
+        [ApiExplorerSettings(IgnoreApi = true)]
+        [HttpPost("full")]
+        public async Task<IActionResult> CreateFullAssessment([FromBody] CreateAssessmentDto dto)
+        {
+            try
+            {
+                // Validate cơ bản
+                if (dto == null || string.IsNullOrWhiteSpace(dto.Title))
+                    return BadRequest("Assessment title is required.");
+
+                if (dto.Questions == null || !dto.Questions.Any())
+                    return BadRequest("At least one question is required.");
+
+                // Tạo danh sách câu hỏi
+                var questions = dto.Questions.Select(q =>
+                {
+                    if (string.IsNullOrWhiteSpace(q.QuestionText))
+                        throw new ArgumentException("Question text is required.");
+
+                    var options = q.Options?.Select(o => new AssessmentOption
+                    {
+                        OptionText = o.OptionText,
+                        OptionValue = o.OptionValue ?? 0
+                    }).ToList() ?? new List<AssessmentOption>();
+
+                    return new AssessmentQuestion
+                    {
+                        QuestionText = q.QuestionText,
+                        QuestionType = q.QuestionType,
+                        AssessmentOptions = options
+                    };
+                }).ToList();
+
+                // Mapping assessment
+                var assessment = new Assessment
+                {
+                    Title = dto.Title,
+                    Description = dto.Description,
+                    AssessmentType = dto.AssessmentType,
+                    AgeGroup = dto.AgeGroup,
+                    CreatedDate = DateTime.UtcNow,
+                    IsActive = true,
+                    AssessmentQuestions = questions
+                };
+
+                // Lưu
+                var id = await _service.CreateFullAssessmentAsync(assessment);
+
+                return Ok(new
+                {
+                    message = "Assessment created successfully",
+                    assessmentId = id
+                });
+            }
+            catch (ArgumentException argEx)
+            {
+                return BadRequest(new
+                {
+                    message = "Validation error",
+                    error = argEx.Message
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new
+                {
+                    message = "Internal Server Error",
+                    error = ex.Message,
+                    stackTrace = ex.StackTrace
+                });
+            }
+        }
+
+
+
 
         //get
         public class AssessmentSampleDto
@@ -139,6 +199,12 @@ namespace API.Controllers
             public DateTime? CreatedDate { get; set; }
             public bool? IsActive { get; set; }
         }
+
+
+
+        
+
+
     }
 
 } 

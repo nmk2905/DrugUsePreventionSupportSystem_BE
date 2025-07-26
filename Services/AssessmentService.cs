@@ -1,4 +1,5 @@
-﻿using Repositories;
+﻿using Microsoft.EntityFrameworkCore;
+using Repositories;
 using Repositories.Models;
 using System;
 using System.Collections.Generic;
@@ -12,20 +13,17 @@ namespace Services
     {
         Task<List<Assessment>> GetAllAssessment();
         Task<Assessment> GetAssessmentById(int id);
-        Task<int> AddAssessmentAsync(Assessment asm);
         Task<int> UpdateAssessmentAsync(Assessment asm);
         Task<bool> DeleteAssessmentAsync(int id);
+        //
+        Task<int> CreateFullAssessmentAsync(Assessment assessment);
     }
     public class AssessmentService : IAssessmentService
     {
         private readonly AssessmentRepository _repo;
-        public AssessmentService()
+        public AssessmentService(AssessmentRepository repo)
         {
-            _repo = new AssessmentRepository();
-        }
-        public Task<int> AddAssessmentAsync(Assessment asm)
-        {
-            return _repo.CreateAsync(asm);
+            _repo = repo;
         }
 
         public async Task<bool> DeleteAssessmentAsync(int id)
@@ -51,6 +49,12 @@ namespace Services
         public Task<int> UpdateAssessmentAsync(Assessment asm)
         {
             return _repo.UpdateAsync(asm);
+        }
+
+        //
+        public async Task<int> CreateFullAssessmentAsync(Assessment assessment)
+        {
+            return await _repo.AddAssessmentAsync(assessment);
         }
     }
 }

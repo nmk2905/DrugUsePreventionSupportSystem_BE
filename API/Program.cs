@@ -38,7 +38,7 @@ builder.Services.AddScoped<IAgeGroupService, AgeGroupService>();
 builder.Services.AddScoped<IRiskLevelService, RiskLevelService>();
 builder.Services.AddScoped<IAssessmentService, AssessmentService>();
 
-
+builder.Services.AddScoped<AssessmentRepository>();
 builder.Services.AddScoped<CourseRepository>();
 builder.Services.AddScoped<CourseCategoryRepository>();
 builder.Services.AddScoped<CourseRegisterRepository>();
@@ -53,7 +53,7 @@ builder.Services.AddDbContext<Drug_use_prevention_systemContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
-    
+
 
 //
 builder.Services.AddControllers().AddJsonOptions(options =>
