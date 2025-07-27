@@ -42,13 +42,13 @@ namespace API.Controllers
 
         //lấy data 1 bài Assessment chỉ định
         [HttpGet("{id}")]
-        public async Task<ActionResult<Assessment>> GetById(int id)
+        public async Task<ActionResult<AssessmentDetailDto>> GetById(int id)
         {
             var dto = await _service.GetAssessmentById(id);
             if (dto == null)
                 return NotFound(new { message = "Không tìm thấy bài đánh giá." });
 
-            var result = new AssessmentSampleDto
+            var result = new AssessmentDetailDto
             {
                 AssessmentId = dto.AssessmentId,
                 Title = dto.Title,
@@ -56,10 +56,23 @@ namespace API.Controllers
                 AssessmentType = dto.AssessmentTypeNavigation?.Name,
                 AgeGroup = dto.AgeGroupNavigation?.Name,
                 CreatedDate = dto.CreatedDate,
-                IsActive = dto.IsActive
+                IsActive = dto.IsActive,
+                Questions = dto.AssessmentQuestions?.Select(q => new QuestionDto
+                {
+                    QuestionId = q.QuestionId,
+                    QuestionText = q.QuestionText,
+                    QuestionType = q.QuestionType,
+                    Options = q.AssessmentOptions?.Select(o => new OptionDto
+                    {
+                        OptionId = o.OptionId,
+                        OptionText = o.OptionText
+                    }).ToList()
+                }).ToList()
             };
+
             return Ok(result);
         }
+
 
 
         //update
@@ -200,9 +213,39 @@ namespace API.Controllers
             public bool? IsActive { get; set; }
         }
 
+        //getbyid
+
+        public class AssessmentDetailDto
+        {
+            public int AssessmentId { get; set; }
+            public string Title { get; set; }
+            public string Description { get; set; }
+            public string AssessmentType { get; set; }
+            public string AgeGroup { get; set; }
+            public DateTime? CreatedDate { get; set; }
+            public bool? IsActive { get; set; }
+
+            public List<QuestionDto> Questions { get; set; }
+        }
+
+        public class QuestionDto
+        {
+            public int QuestionId { get; set; }
+            public string QuestionText { get; set; }
+            public string QuestionType { get; set; }
+
+            public List<OptionDto> Options { get; set; }
+        }
+
+        public class OptionDto
+        {
+            public int OptionId { get; set; }
+            public string OptionText { get; set; }
+        }
 
 
-        
+
+
 
 
     }

@@ -28,6 +28,8 @@ namespace Repositories
             return await _context.Assessments
                 .Include(a => a.AgeGroupNavigation)
                 .Include(a => a.AssessmentTypeNavigation)
+                .Include(a => a.AssessmentQuestions)
+                    .ThenInclude(q => q.AssessmentOptions)
                 .FirstOrDefaultAsync(a => a.AssessmentId == id);
         }
 
