@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using DTO.Blog;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OData.Query;
@@ -155,16 +156,7 @@ namespace API.Controllers
             return await _blogService.Delete(id);
         }
 
-        public class BlogDTO
-        {
-            public int BlogId { get; set; }
-            public string Title { get; set; }
-            public string Content { get; set; }
-            public int? AuthorId { get; set; }
-            public DateTime? PublishedDate { get; set; }
-            public string Status { get; set; }
-            public string AuthorFullName { get; set; } 
-        }
+        
 
     }
 }

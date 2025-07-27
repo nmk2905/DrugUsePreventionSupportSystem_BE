@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using DTO.AssessmentOption;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Repositories.Models;
@@ -100,30 +101,5 @@ namespace API.Controllers
             return Ok(new { message = "Xóa thành công" });
         }
 
-
-        //get
-        public class OptionSampleDto
-        {
-            public int OptionId { get; set; }
-            public int? QuestionId { get; set; }
-            public string QuestionText { get; set; }
-            public string OptionText { get; set; }
-            public int? OptionValue { get; set; }
-        }
-
-        //add,update
-        public class AddOptionDto
-        {
-            public int? QuestionId { get; set; }
-            public string OptionText { get; set; }
-            public int? OptionValue { get; set; }
-        }
-
-        public class UpdateOptionDto
-        {
-            public int? QuestionId { get; set; }
-            public string OptionText { get; set; }
-            public int? OptionValue { get; set; }
-        }
     }
 }

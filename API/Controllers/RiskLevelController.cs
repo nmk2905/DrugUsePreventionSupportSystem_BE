@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using DTO.RiskLevel;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Repositories.Models;
@@ -93,19 +94,6 @@ namespace API.Controllers
             return Ok(new { message = "Xóa thành công" });
         }
 
-        //Get
-        public class RiskLevelSampleDto
-        {
-            public int RiskId { get; set; }
-            public string RiskLevel1 { get; set; }
-            public string RiskDescription { get; set; }
-        }
 
-        //add,update
-        public class RiskLevelDto
-        {
-            public string? RiskLevel1 { get; set; }
-            public string? RiskDescription { get; set; }
-        }
     }
 }

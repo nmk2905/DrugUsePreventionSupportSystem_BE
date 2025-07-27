@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using DTO.AssessmentQuestion;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Repositories.Models;
@@ -115,28 +116,7 @@ namespace API.Controllers
             return Ok(new { message = "Xóa thành công" });
         }
 
-        // DTO cho Get
-        public class QuestionDto
-        {
-            public int QuestionId { get; set; }
-            public string QuestionText { get; set; }
-            public string QuestionType { get; set; }
-            public string AssessmentTitle { get; set; }
-        }
-
-        // DTO cho Add/Update
-        public class CreateQuestionDto
-        {
-            public int? AssessmentId { get; set; }
-            public string QuestionText { get; set; }
-            public string QuestionType { get; set; }
-        }
-
-        public class UpdateQuestionDto
-        {
-            public int? AssessmentId { get; set; }
-            public string? QuestionText { get; set; }
-            public string? QuestionType { get; set; }
-        }
+   
+        
     }
 }

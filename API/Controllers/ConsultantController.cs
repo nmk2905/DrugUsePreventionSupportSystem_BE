@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using DTO.Consultant;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Services;
@@ -103,31 +104,11 @@ namespace API.Controllers
 
 
 
-    public class UpdateConsultantRequest
-    {
-        public string Specification { get; set; }
-        public string Qualifications { get; set; }
-        public int ExperienceYears { get; set; }
-    }
+    
 
-    public class ConsultantPreview
-    {
-        public int ConsultantId { get; set; }
-        public string FullName { get; set; }
-        public string Specification { get; set; }
-        public int ExperienceYears { get; set; }
-    }
+    
 
-    public class ConsultantSimpleDTO
-    {
-        public int Number { get; set; }
-        public int ConsultantId { get; set; }
-        public string FullName { get; set; }
-        public string Specification { get; set; }
-        public string Qualifications { get; set; }
-        public int ExperienceYears { get; set; }
-        public bool IsActive { get; set; }
-    }
+    
 
 
 

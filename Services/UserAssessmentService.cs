@@ -24,8 +24,8 @@ namespace Services
 
         private int GetRiskLevelIdFromScore(decimal score)
         {
-            if (score <= 5) return 1;
-            if (score <= 10) return 2;
+            if (score <= 6) return 1;
+            if (score <= 13) return 2;
             return 3;
         }
 

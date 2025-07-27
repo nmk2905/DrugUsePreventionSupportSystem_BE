@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using DTO.Appointment;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Repositories.Enums.Appointment;
 using Repositories.Models;
@@ -90,26 +91,8 @@ namespace API.Controllers
         }
     }
 
-    public class BookAppointmentRequest
-    {
-        public int AvailabilityId { get; set; }
-    }
+    
 
-    public class ApproveAppointmentRequest
-    {
-        public int AppointmentId { get; set; }
-        public string MeetingLink { get; set; }
-    }
-
-    public class AppointmentDto
-    {
-        public int AppointmentId { get; set; }
-        public string ConsultantName { get; set; }
-        public string UserName { get; set; }
-        public string Status { get; set; }
-        public string? MeetingLink { get; set; }
-        public int? MaterialId { get; set; }
-        public DateTime CreatedDate { get; set; }
-    }
+    
 
 }

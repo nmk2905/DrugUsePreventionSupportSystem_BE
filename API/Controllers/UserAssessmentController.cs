@@ -38,12 +38,7 @@ namespace API.Controllers
 
 
 
-        public class SubmitAssessmentDto
-        {
-            public int UserId { get; set; }
-            public int AssessmentId { get; set; }
-            public List<int> SelectedOptionIds { get; set; }
-        }
+        
 
 
     }

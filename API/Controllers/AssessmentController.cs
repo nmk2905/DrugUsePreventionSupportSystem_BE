@@ -12,7 +12,7 @@ namespace API.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    [Authorize(Roles = "1")]
+
     public class AssessmentController : Controller
     {
         private readonly IAssessmentService _service;
@@ -73,10 +73,11 @@ namespace API.Controllers
             return Ok(result);
         }
 
-
+        
 
         //update
         [HttpPut("{id}")]
+        [Authorize(Roles = "1")]
         public async Task<ActionResult> Update(int id, [FromBody] AssessmentDto dto)
         {
             var existing = await _service.GetAssessmentById(id);
@@ -105,7 +106,113 @@ namespace API.Controllers
             return Ok(new { message = "Cập nhật thành công" });
         }
 
+
+        ////update
+        //[HttpPut("{id}/full")]
+        //[Authorize(Roles = "1")]
+        //public async Task<IActionResult> UpdateFull(int id, [FromBody] UpdateFullAssessmentDto dto)
+        //{
+        //    var existing = await _service.GetAssessmentWithQuestions(id);
+        //    if (existing == null)
+        //        return NotFound(new { message = "Không tìm thấy khảo sát." });
+
+        //    // Cập nhật metadata nếu có
+        //    if (dto.Title != null) existing.Title = dto.Title;
+        //    if (dto.Description != null) existing.Description = dto.Description;
+        //    if (dto.AssessmentType != null) existing.AssessmentType = dto.AssessmentType;
+        //    if (dto.AgeGroup != null) existing.AgeGroup = dto.AgeGroup;
+        //    if (dto.CreatedDate != null) existing.CreatedDate = dto.CreatedDate;
+        //    if (dto.IsActive != null) existing.IsActive = dto.IsActive;
+
+        //    var updatedQuestionIds = new List<int>();
+
+        //    foreach (var qDto in dto.Questions)
+        //    {
+        //        if (qDto.QuestionId.HasValue)
+        //        {
+        //            // Cập nhật câu hỏi cũ
+        //            var existingQ = existing.AssessmentQuestions
+        //                .FirstOrDefault(q => q.QuestionId == qDto.QuestionId.Value);
+
+        //            if (existingQ != null)
+        //            {
+        //                existingQ.QuestionText = qDto.QuestionText;
+        //                existingQ.QuestionType = qDto.QuestionType;
+
+        //                var updatedOptionIds = new List<int>();
+
+        //                foreach (var oDto in qDto.Options)
+        //                {
+        //                    if (oDto.OptionId.HasValue)
+        //                    {
+        //                        // Cập nhật option cũ
+        //                        var existingO = existingQ.AssessmentOptions
+        //                            .FirstOrDefault(o => o.OptionId == oDto.OptionId.Value);
+
+        //                        if (existingO != null)
+        //                        {
+        //                            existingO.OptionText = oDto.OptionText;
+        //                            existingO.OptionValue = oDto.OptionValue;
+        //                            updatedOptionIds.Add(existingO.OptionId);
+        //                        }
+        //                    }
+        //                    else
+        //                    {
+        //                        // Thêm option mới
+        //                        existingQ.AssessmentOptions.Add(new AssessmentOption
+        //                        {
+        //                            OptionText = oDto.OptionText,
+        //                            OptionValue = oDto.OptionValue
+        //                        });
+        //                    }
+        //                }
+
+        //                // Xoá option không còn trong DTO
+        //                var optionsToRemove = existingQ.AssessmentOptions
+        //                    .Where(o => !updatedOptionIds.Contains(o.OptionId))
+        //                    .ToList();
+
+        //                foreach (var o in optionsToRemove)
+        //                    existingQ.AssessmentOptions.Remove(o);
+
+        //                updatedQuestionIds.Add(existingQ.QuestionId);
+        //            }
+        //        }
+        //        else
+        //        {
+        //            // Thêm câu hỏi mới
+        //            var newQ = new AssessmentQuestion
+        //            {
+        //                QuestionText = qDto.QuestionText,
+        //                QuestionType = qDto.QuestionType,
+        //                AssessmentOptions = qDto.Options.Select(o => new AssessmentOption
+        //                {
+        //                    OptionText = o.OptionText,
+        //                    OptionValue = o.OptionValue
+        //                }).ToList()
+        //            };
+        //            existing.AssessmentQuestions.Add(newQ);
+        //        }
+        //    }
+
+        //    // Xoá câu hỏi không còn trong DTO
+        //    var questionsToRemove = existing.AssessmentQuestions
+        //        .Where(q => !updatedQuestionIds.Contains(q.QuestionId))
+        //        .ToList();
+
+        //    foreach (var q in questionsToRemove)
+        //        existing.AssessmentQuestions.Remove(q);
+
+        //    // Lưu thay đổi
+        //    await _service.UpdateAssessmentAsync(existing);
+        //    return Ok(new { message = "Cập nhật bài khảo sát thành công." });
+        //}
+
+
+
+        //
         [HttpDelete("Delete/{id}")]
+        [Authorize(Roles = "1")]
         public async Task<IActionResult> Delete(int id)
         {
             var success = await _service.DeleteAssessmentAsync(id);
@@ -114,8 +221,10 @@ namespace API.Controllers
             return Ok(new { message = "Xóa thành công" });
         }
 
+        //add
         [ApiExplorerSettings(IgnoreApi = true)]
         [HttpPost("full")]
+        [Authorize(Roles = "1")]
         public async Task<IActionResult> CreateFullAssessment([FromBody] CreateAssessmentDto dto)
         {
             try
@@ -187,67 +296,5 @@ namespace API.Controllers
             }
         }
 
-
-
-
-        //get
-        public class AssessmentSampleDto
-        {
-            public int AssessmentId { get; set; }
-            public string Title { get; set; }
-            public string Description { get; set; }
-            public string AssessmentType { get; set; }
-            public string AgeGroup { get; set; }
-            public DateTime? CreatedDate { get; set; }
-            public bool? IsActive { get; set; }
-        }
-
-        //add, update
-        public class AssessmentDto
-        {
-            public string Title { get; set; }
-            public string Description { get; set; }
-            public int? AssessmentType { get; set; }
-            public int? AgeGroup { get; set; }
-            public DateTime? CreatedDate { get; set; }
-            public bool? IsActive { get; set; }
-        }
-
-        //getbyid
-
-        public class AssessmentDetailDto
-        {
-            public int AssessmentId { get; set; }
-            public string Title { get; set; }
-            public string Description { get; set; }
-            public string AssessmentType { get; set; }
-            public string AgeGroup { get; set; }
-            public DateTime? CreatedDate { get; set; }
-            public bool? IsActive { get; set; }
-
-            public List<QuestionDto> Questions { get; set; }
-        }
-
-        public class QuestionDto
-        {
-            public int QuestionId { get; set; }
-            public string QuestionText { get; set; }
-            public string QuestionType { get; set; }
-
-            public List<OptionDto> Options { get; set; }
-        }
-
-        public class OptionDto
-        {
-            public int OptionId { get; set; }
-            public string OptionText { get; set; }
-        }
-
-
-
-
-
-
     }
-
 } 

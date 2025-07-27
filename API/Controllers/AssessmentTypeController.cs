@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using DTO.AssessmentType;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Repositories.Models;
@@ -92,19 +93,6 @@ namespace API.Controllers
         }
 
 
-        //get
-        public class AssessmentTypeSampleDto
-        {
-            public int AssessmentTypeId { get; set; }
-            public string Name { get; set; }
-            public string Description { get; set; }
-        }
-
-        //add,update
-        public class AssessmentTypeDto
-        {
-            public string? Name { get; set; }
-            public string? Description { get; set; }
-        }
+        
     }
 }

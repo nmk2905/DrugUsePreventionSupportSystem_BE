@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using DTO.AgeGroup;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Repositories.Models;
@@ -115,23 +116,6 @@ namespace API.Controllers
             return Ok(new { message = "Xóa thành công" });
         }
 
-        //get
-        public class AgeGroupSampleDto
-        {
-            public int GroupId { get; set; }
-            public string Name { get; set; }
-            public string Description { get; set; }
-            public int MinAge { get; set; }
-            public int MaxAge { get; set; }
-        }
-
-        //add,update
-        public class AgeGroupDto
-        {
-            public string? Name { get; set; }
-            public string? Description { get; set; }
-            public int? MinAge { get; set; }
-            public int? MaxAge { get; set; }
-        }
+    
     }
 }

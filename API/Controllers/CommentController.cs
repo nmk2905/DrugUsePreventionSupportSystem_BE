@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using DTO.Comment;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OData.Query;
@@ -175,16 +176,7 @@ namespace API.Controllers
             return Ok(comments);
         }
 
-        public class CommentDTO
-        {
-            public int CommentId { get; set; }
-            public string Content { get; set; }
-            public DateTime? PostDate { get; set; }
-            public int? BlogId { get; set; }
-            public string BlogTitle { get; set; }
-            public int? UserId { get; set; }
-            public string UserFullName { get; set; }
-        }
+        
 
 
         public sealed record MyCommentResponse(

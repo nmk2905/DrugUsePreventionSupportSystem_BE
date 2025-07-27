@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using DTO.Admin;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Services;
@@ -123,28 +124,9 @@ namespace API.Controllers
         //}
 
 
-        public class UserDTO
-        {
-            public int UserId { get; set; }
-            public string FullName { get; set; }
-            public string Address { get; set; }
-            public string Email { get; set; }
-            public DateOnly DateOfBirth { get; set; }
-            public string Password { get; set; }
-            public DateTime? CreatedDate { get; set; }
-            public string RoleName { get; set; }
-        }
+        
 
-        public class BlogDTO
-        {
-            public int BlogId { get; set; }
-            public string Title { get; set; }
-            public string Content { get; set; }
-            public int? AuthorId { get; set; }
-            public DateTime? PublishedDate { get; set; }
-            public string Status { get; set; }
-            public string AuthorFullName { get; set; }
-        }
+        
 
 
     }

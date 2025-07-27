@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using DTO.ConsultantAvailability;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -95,32 +96,9 @@ namespace API.Controllers
 
 
 
-        public class CreateSlotRequest
-        {
-            public DateOnly SpecificDate { get; set; }
-            public TimeOnly StartTime { get; set; }
-            public TimeOnly EndTime { get; set; }
-        }
+        
 
-        public class SlotDto
-        {
-            public int AvailabilityId { get; set; }
-            public DateOnly? SpecificDate { get; set; }
-            public TimeOnly? StartTime { get; set; }
-            public TimeOnly? EndTime { get; set; }
-            public string ConsultantName { get; set; }
-        }
-
-        public class ConsultantSlotDto
-        {
-            public int AvailabilityId { get; set; }
-            public int? ConsultantId { get; set; }
-            public DateOnly? SpecificDate { get; set; }
-            public TimeOnly? StartTime { get; set; }
-            public TimeOnly? EndTime { get; set; }
-            public bool IsAvailable { get; set; }
-            public string Consultant { get; set; }
-        }
+        
 
 
 

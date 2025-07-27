@@ -17,6 +17,7 @@ namespace Services
         Task<bool> DeleteAssessmentAsync(int id);
         //
         Task<int> CreateFullAssessmentAsync(Assessment assessment);
+        //Task<Assessment> GetAssessmentWithQuestions(int id);
     }
     public class AssessmentService : IAssessmentService
     {
@@ -56,5 +57,10 @@ namespace Services
         {
             return await _repo.AddAssessmentAsync(assessment);
         }
+
+        //public async Task<Assessment> GetAssessmentWithQuestions(int id)
+        //{
+        //    return await _repo.GetAssessmentWithQuestions(id);
+        //}
     }
 }

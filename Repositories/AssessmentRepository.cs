@@ -40,5 +40,14 @@ namespace Repositories
             await _context.SaveChangesAsync();
             return assessment.AssessmentId;
         }
+
+        //public async Task<Assessment> GetAssessmentWithQuestions(int id)
+        //{
+        //    return await _context.Assessments
+        //        .Include(a => a.AssessmentQuestions)
+        //            .ThenInclude(q => q.AssessmentOptions)
+        //        .FirstOrDefaultAsync(a => a.AssessmentId == id);
+        //}
+
     }
 }

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using DTO.User;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
@@ -226,16 +227,7 @@ namespace API.Controllers
 
 
 
-        public class UserDTO
-        {
-            public int UserId { get; set; }
-            public string FullName { get; set; }
-            public string Address { get; set; }
-            public string Email { get; set; }
-            public DateOnly DateOfBirth { get; set; }
-            public DateTime? CreatedDate { get; set; }
-            public string RoleName { get; set; }
-        }
+        
 
 
         public sealed record LoginRequest(string Email, string Password);
