@@ -48,6 +48,27 @@ namespace API.Controllers
             }
         }
 
+
+        [HttpGet("AllAppointments")]
+        [Authorize(Roles = "1")]
+        public async Task<IActionResult> AllAppointments()
+        {
+            var appointments = await _appointmentService.GetAllForAdmin();
+
+            var result = appointments.Select(a => new AppointmentDto
+            {
+                AppointmentId = a.AppointmentId,
+                ConsultantName = a.Consultant?.ConsultantNavigation?.FullName,
+                UserName = a.User?.FullName,
+                Status = a.Status,
+                CreatedDate = a.CreatedDate,
+                MeetingLink = a.MeetingLink,
+                MaterialId = a.Material
+            }).ToList();
+
+            return Ok(result);
+        }
+
         //xem các lịch đã được book của customer và cons
         [HttpGet("MyAppointments")]
         [Authorize(Roles = "2,3")]

@@ -7,6 +7,7 @@ namespace Services
 {
     public interface IAppointmentService
     {
+        Task<List<Appointment>> GetAllForAdmin();
         Task<Appointment> BookAppointmentAsync(int userId, int availabilityId);
         Task<List<Appointment>> GetAppointmentsByUserIdAsync(int userId);
         Task<bool> CancelAppointmentAsync(int appointmentId, int userId);
@@ -22,6 +23,11 @@ namespace Services
         {
             _appointmentRepo = new AppointmentRepository();
             _availabilityRepo = new AvailabilityRepository();
+        }
+
+        public async Task<List<Appointment>> GetAllForAdmin()
+        {
+            return await _appointmentRepo.GetAllForAdmin();
         }
 
         public async Task<Appointment> BookAppointmentAsync(int userId, int availabilityId)

@@ -32,5 +32,11 @@ namespace Repositories
                 .FirstOrDefaultAsync(a => a.AppointmentId == id);
         }
 
+        public async Task<List<Appointment>> GetAllForAdmin()
+        {
+            return await _context.Appointments.Include(a => a.User)
+                .Include(a => a.Consultant).ThenInclude(c => c.ConsultantNavigation).ToListAsync();
+        }
+
     }
 }
