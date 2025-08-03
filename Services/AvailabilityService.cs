@@ -30,23 +30,41 @@ namespace Services
             return await _repo.GetByIdWithConsultantAsync(id);
         }
 
-        public async Task<List<ConsultantsAvailability>> GetAvailableSlotsWithConsultant(int consultantId, DateOnly from, DateOnly to)
+        public async Task<List<ConsultantsAvailability>> GetAvailableSlotsWithConsultant(int userId, DateOnly from, DateOnly to)
         {
-            return await _repo.GetAvailableSlotsWithConsultant(consultantId, from, to);
+            var consultantNumber = await _repo.GetConsultantNumberByUserIdAsync(userId);
+
+            if (consultantNumber == null)
+                throw new Exception($"Không tìm thấy consultant với userId = {userId}");
+
+            return await _repo.GetAvailableSlotsWithConsultant(consultantNumber.Value, from, to);
         }
 
 
-        public async Task<List<ConsultantsAvailability>> GetAvailableSlots(int consultantId, DateOnly from, DateOnly to)
+
+        public async Task<List<ConsultantsAvailability>> GetAvailableSlots(int userId, DateOnly from, DateOnly to)
         {
-            return await _repo.GetAvailableSlotsWithConsultant(consultantId, from, to);
+            var consultantNumber = await _repo.GetConsultantNumberByUserIdAsync(userId);
+
+            if (consultantNumber == null)
+                throw new Exception($"Không tìm thấy consultant với userId = {userId}");
+
+            return await _repo.GetAvailableSlotsWithConsultant(consultantNumber.Value, from, to);
         }
 
 
-        public async Task<ConsultantsAvailability> CreateSlot(int consultantId, DateOnly date, TimeOnly start, TimeOnly end)
+
+        public async Task<ConsultantsAvailability> CreateSlot(int userId, DateOnly date, TimeOnly start, TimeOnly end)
         {
+            // Lấy số hiệu (Number) của consultant từ userId
+            var consultantNumber = await _repo.GetConsultantNumberByUserIdAsync(userId);
+
+            if (consultantNumber == null)
+                throw new Exception($"Không tìm thấy consultant với userId = {userId}");
+
             var slot = new ConsultantsAvailability
             {
-                ConsultantId = consultantId,
+                ConsultantId = consultantNumber.Value, // Đây mới là giá trị đúng
                 SpecificDate = date,
                 StartTime = start,
                 EndTime = end,
@@ -56,5 +74,6 @@ namespace Services
             await _repo.CreateAsync(slot);
             return slot;
         }
+
     }
 }

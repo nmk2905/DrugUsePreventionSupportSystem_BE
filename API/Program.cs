@@ -38,6 +38,7 @@ builder.Services.AddScoped<IAgeGroupService, AgeGroupService>();
 builder.Services.AddScoped<IRiskLevelService, RiskLevelService>();
 builder.Services.AddScoped<IAssessmentService, AssessmentService>();
 
+builder.Services.AddScoped<ConsultantRepository>();
 builder.Services.AddScoped<AssessmentRepository>();
 builder.Services.AddScoped<CourseRepository>();
 builder.Services.AddScoped<CourseCategoryRepository>();

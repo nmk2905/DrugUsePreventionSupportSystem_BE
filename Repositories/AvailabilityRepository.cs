@@ -32,6 +32,14 @@ namespace Repositories
                 .FirstOrDefaultAsync(ca => ca.AvailabilityId == id);
         }
 
+        public async Task<int?> GetConsultantNumberByUserIdAsync(int userId)
+        {
+            var consultant = await _context.Consultants
+                .FirstOrDefaultAsync(c => c.ConsultantId == userId);
+
+            return consultant?.Number;
+        }
+
 
     }
 }

@@ -21,9 +21,9 @@ namespace Services
     {
         private readonly ConsultantRepository _repository;
 
-        public ConsultantService()
+        public ConsultantService(ConsultantRepository repository)
         {
-            _repository = new ConsultantRepository();
+            _repository = repository;
         }
         public async Task<List<Consultant>> GetAllConsultant()
         {

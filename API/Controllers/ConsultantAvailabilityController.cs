@@ -22,13 +22,14 @@ namespace API.Controllers
         [HttpGet("AvailableSlots")]
         [Authorize(Roles = "3")] // user xem được các slot trống của 1 consultant
         public async Task<IActionResult> GetAvailableSlots(
-            [FromQuery] int consultantId,
-            [FromQuery] string from,
-            [FromQuery] string to)
+    [FromQuery] int consultantId,
+    [FromQuery] string from,
+    [FromQuery] string to)
         {
             if (!DateOnly.TryParse(from, out var fromDate) || !DateOnly.TryParse(to, out var toDate))
                 return BadRequest("from/to không hợp lệ. Định dạng đúng: yyyy-MM-dd");
 
+            // consultantId ở đây thực ra là UserId
             var slots = await _availabilityService.GetAvailableSlots(consultantId, fromDate, toDate);
 
             var result = slots.Select(s => new SlotDto
@@ -42,6 +43,7 @@ namespace API.Controllers
 
             return Ok(result);
         }
+
 
 
 
@@ -59,13 +61,14 @@ namespace API.Controllers
             var result = slots.Select(s => new ConsultantSlotDto
             {
                 AvailabilityId = s.AvailabilityId,
-                ConsultantId = s.ConsultantId,
+                ConsultantId = s.Consultant?.ConsultantId ?? 0, // Lấy đúng userId
                 SpecificDate = s.SpecificDate,
                 StartTime = s.StartTime,
                 EndTime = s.EndTime,
                 IsAvailable = s.IsAvailable,
                 Consultant = s.Consultant?.ConsultantNavigation?.FullName ?? "(Không rõ)"
             });
+
 
             return Ok(result);
         }
